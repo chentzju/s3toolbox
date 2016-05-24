@@ -1,4 +1,6 @@
 !(function(){
+    "use strict"
+
     var S3ToolBox = function () {
 
     };
