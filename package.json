@@ -1,0 +1,32 @@
+{
+  "name": "S3ToolBox",
+  "version": "0.0.0",
+  "homepage": "http://109.6.13.48/nfc-chent/s3toolbox/tree/master",
+  "description": "gongyinju s3 tool box",
+  "license": "MIT",
+  "keywords": [
+    "S3",
+    "tool box",
+    "S3ToolBox"
+  ],
+  "author": "gongyinju front-team,ICBC Inc.",
+
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^0.8.2",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^0.11.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-cptpl": "^0.1.3",
+    "grunt-text-replace":"^0.4.0",
+    "load-grunt-tasks": "^3.4.0"
+  },
+
+  "files": [
+    "dist",
+    "src/*.js",
+    "Gruntfile.js",
+    "LICENSE"
+  ]
+}
