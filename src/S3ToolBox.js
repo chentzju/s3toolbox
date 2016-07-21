@@ -26,12 +26,13 @@ var S3 = (function ($) {
      * 一些通用的方法
      * @type {{isArray: (*|Function), isNumber: Utils.isNumber, isObject: Utils.isObject, isNull: Utils.isNull, isUndefined: Utils.isUndefined, has: Utils.has, keys: Utils.keys}}
      */
-    var Utils = {
+    var Utils;
+    Utils = {
 
         /**
          * 判断是否数组
          */
-        isArray : Array.isArray || function(obj) {
+        isArray: Array.isArray || function (obj) {
             return toString.call(obj) === '[object Array]';
         },
 
@@ -40,7 +41,7 @@ var S3 = (function ($) {
          * @param obj
          * @returns {boolean}
          */
-        isNumber : function(obj){
+        isNumber: function (obj) {
             return typeof obj === 'number';
         },
 
@@ -49,21 +50,21 @@ var S3 = (function ($) {
          * @param obj
          * @returns {boolean}
          */
-        isObject : function(obj) {
+        isObject: function (obj) {
             var type = typeof obj;
             return type === 'function' || type === 'object' && !!obj;
         },
         /**
          *
          */
-        isPlainObject:function(obj){
-            var proto,ctor,o={};
-            if(!obj || toString.call(obj) !== "[object Object]"){
+        isPlainObject: function (obj) {
+            var proto, ctor, o = {};
+            if (!obj || toString.call(obj) !== "[object Object]") {
                 return false;
             }
             proto = Object.getPrototypeOf(obj);
 
-            if(!proto){
+            if (!proto) {
                 return true;
             }
 
@@ -71,17 +72,17 @@ var S3 = (function ($) {
             var hasOwn = o.hasOwnProperty;
             var fn2String = hasOwn.toString;
 
-            ctor = o.hasOwnProperty.call(proto,"constructor") && proto.constructor;
+            ctor = o.hasOwnProperty.call(proto, "constructor") && proto.constructor;
             return typeof ctor === "function" && fn2String.call(ctor) === fn2String.call(Object)
         },
 
         // Is a given value equal to null?
-        isNull : function(obj) {
+        isNull: function (obj) {
             return obj === null;
         },
 
-         // Is a given variable undefined?
-        isUndefined : function(obj) {
+        // Is a given variable undefined?
+        isUndefined: function (obj) {
             return obj === void 0;
         },
 
@@ -91,7 +92,7 @@ var S3 = (function ($) {
          * @param key
          * @returns {boolean}
          */
-        has : function(obj, key) {
+        has: function (obj, key) {
             return obj != null && Object.prototype.hasOwnProperty.call(obj, key);
         },
 
@@ -100,11 +101,13 @@ var S3 = (function ($) {
          * @param obj
          * @returns {Array}
          */
-        keys : function(obj) {
+        keys: function (obj) {
             if (!Utils.isObject(obj)) return [];
             if (Object.keys) return Object.keys(obj);
             var keys = [];
-            for (var key in obj) if (Utils.has(obj, key)) keys.push(key);
+            for (var key in obj) {
+                if (Utils.has(obj, key)) keys.push(key);
+            }
             // Ahem, IE < 9.
             //if (hasEnumBug) collectNonEnumProps(obj, keys);
             return keys;
@@ -115,7 +118,7 @@ var S3 = (function ($) {
          * @param obj
          * @returns {*}
          */
-        values : function(obj) {
+        values: function (obj) {
             var keys = Utils.keys(obj);
             var length = keys.length;
             var values = Array(length);
@@ -125,11 +128,11 @@ var S3 = (function ($) {
             return values;
         },
 
-        clone : function(obj) {
-             if (!Utils.isObject(obj)) return obj;
-             return Utils.isArray(obj) ? obj.slice() : Utils.extend({}, obj);
+        clone: function (obj) {
+            if (!Utils.isObject(obj)) return obj;
+            return Utils.isArray(obj) ? obj.slice() : Utils.extend({}, obj);
         },
-        extend:function(obj){
+        extend: function (obj) {
 
         },
 
@@ -139,16 +142,16 @@ var S3 = (function ($) {
          * @param date2
          * @returns {boolean}
          */
-        dateCompare:function(date1,date2){
-            var date1=new Date(delimiterConvert(date1)).getTime()
-            var date2=new Date(delimiterConvert(date2)).getTime();
-            if (date1>date2) {
+        dateCompare: function (date1, date2) {
+            var date1 = new Date(delimiterConvert(date1)).getTime();
+            var date2 = new Date(delimiterConvert(date2)).getTime();
+            if (date1 > date2) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
-};
+    };
 
     //
     toolBox.utils = Utils;
@@ -168,7 +171,7 @@ var S3 = (function ($) {
         /**
          * 将form表单中的数据封装成JSON对象。
          * @param form
-         * @return obj
+         * @return {}
          */
         form2json:function(form){
             var obj = {};
@@ -176,7 +179,7 @@ var S3 = (function ($) {
             $.each(a,function(){
                 if(obj[this.name]!==undefined){
                     if(!obj[this.name].push){
-                        obj[this.name]=[obj[this.name]];
+                        obj[this.name] = [obj[this.name]];
                     }
                     obj[this.name].push(this.value||'');
                 }else{
@@ -280,7 +283,7 @@ var S3 = (function ($) {
 
     ScrollLoad.activeScrollLoad = function(){
         if(typeof callback != '[object function]') {
-            throw ('You even not set a callback function!')
+            throw ('You even not set a callback function!');
             return;
         }
         $(window).scroll(function(){
@@ -290,7 +293,7 @@ var S3 = (function ($) {
 
     ScrollLoad.removeScrollLoad = function(){
         $(window).unbind('scroll');
-    }
+    };
     toolBox.ScrollLoad = ScrollLoad;
 }(S3);
 
