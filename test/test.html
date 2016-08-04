@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src ="../src/jquery.min.js"></script>
-    <script src = "../src/S3ToolBox.js"></script>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
     <style>
         div{
             margin:2px;
@@ -25,13 +25,14 @@
             background-color:#88f;
         }
     </style>
+
 </head>
 <body>
 <div>
+    <h1>json2form</h1>
     <button id='json2form'>json2form</button>
     <button id='clearForm'>clearForm</button>
     <button id='form2jsom'>form2jsom</button>
-
     <form id = "formid">
         <input type = "text" name="name1" >
         <input name ="name2" type = "numver">
@@ -66,96 +67,31 @@
         </select>
     </form>
 </div>
+
+
+<div>
+    <h1>template</h1>
+    <div id = "temp"></div>
+</div>
+
+<script type="text/html" id = "template">
+    <div>
+        <h6><%= data.title%></h6>
+        <ul>
+            <%
+            var list = data.list;
+            for(var i=0;i<list.length;i++){
+            %>
+            <li>
+                <%= list%>
+            </li>
+            <% } %>
+        </ul>
+    </div>
+</script>
+
 </body>
 <script>
-    function json2form(form,jsonObj,pre){
-        var key,value,name,pre,eles,match;
-
-        pre = pre || '';
-
-        //遍历对象
-        for(key in jsonObj){
-            name = pre + key;
-            value = jsonObj[key];
-
-            //如果还是对象，那就要递归  基本用不到
-            if(S3.Utils.isPlainObject(value)){
-                json2form(form,value,key+'.');
-            }else{
-                //查找form中 名字与name匹配的元素
-                eles = [];
-                match = form.elements;
-                for(var i = 0 ;i<match.length;i++){
-                    if(match[i].getAttribute('name') === name){
-                        eles.push(match[i]);
-                    }
-                }
-                //返回的匹配都是数组，直接计算即可
-                eles.forEach(function(elex){
-                        //select
-                        if(elex.tagName.toLowerCase() === "select") {
-                            if(elex.type === "select-multiple"){
-                                for(var i = 0;i<elex.options.length;i++){
-                                    value.forEach(function (x) {
-                                        if(elex.options[i].value === x)
-                                            elex.options[i].selected = true;
-                                    });
-                                }
-                            }else{
-                                for (var i = 0; i < elex.options.length; i++) {
-                                    if (elex.options[i].value === value) {
-                                        elex.selectedIndex = i;
-                                    }
-                                }
-                            }
-                        }
-                        //checkbox
-                        else if(elex.type === "checkbox"){
-                            elex.checked = (elex.value === value || value.some(function(x){ return elex.value === x})) ? true:false;
-                        }
-                        // radio
-                        else if(elex.type === "radio") {
-                            elex.checked = elex.value === value ? true :false;
-                        }else{
-                            elex.value = value;
-                        }
-                    });
-                }
-        }
-    }
-
-
-    function clearForm(form){
-        form.reset();
-    }
-    function form2json(form){
-        var form,jsonobj,ele,name,value;
-        jsonobj = {};
-            for(var i = 0;i<form.elements.length;i++){
-                ele = form.elements[i];
-                name = ele.name;
-                //其他
-                value = ele.value;
-                jsonobj[name] = value
-
-                var obj = {};
-                var a = $(form).serializeArray();
-                $.each(a,function(){
-                    if(obj[this.name]!==undefined){
-                        if(!obj[this.name].push){
-                            obj[this.name]=[obj[this.name]];
-                        }
-                        obj[this.name].push(this.value||'');
-                    }else{
-                        obj[this.name]=this.value||'';
-                    }
-                });
-                return obj;
-
-        }
-        console.log(jsonobj);
-        return jsonobj;
-    }
     $(function(){
 
         var obj = {
@@ -170,17 +106,18 @@
 
         $('#json2form').on("click",function(){
             S3.form.json2form(form,obj);
-        })
+        });
         $('#clearForm').on("click",function(){
             clearForm(form);
-        })
+        });
         $('#form2jsom').on("click",function(){
-            S3.form.form2json(form);
-        })
+           console.log(S3.form.form2json(form));
+        });
+
+        var template = document.getElementById('template');
+        var dataobj = {title:'haha',list:'222'};
+        var compile = S3.template("template",{data:dataobj});
+        document.getElementById('temp').innerHTML =compile;
     })
-
-
-
-
 </script>
 </html>

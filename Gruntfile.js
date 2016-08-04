@@ -3,10 +3,19 @@
 //configuration of grunt
 module.exports = function(grunt) {
 
+    var sources = [
+        'src/S3ToolBox.js',
+        'src/forms.js',
+        'src/calculator.js',
+        'src/eventManager.js',
+        'src/btn.js',
+        'src/template.js'
+    ];
+    
+    
     // Project configuration.
     grunt.initConfig({
-
-
+        
         //start config
 
         //clean
@@ -19,30 +28,22 @@ module.exports = function(grunt) {
             }
         },
 
-        //js test
-        jshint: {
-            options: {
-                "bitwise": false, //位运算符
-                "curly": true,  //循环必须用花括号包围
-                "eqeqeq":true, //必须用三等号
-                "es3":true,  //兼容低等浏览器
-                "freeze":true,//禁止重写原生对象
-                "indent":true, //代码进缩
-                "latedef":true,//禁止定义之前使用变量
-                "noarg":false,
-                "globals": {
-                    jQuery: true
-                }
-            },
-            core: {
-                src: ['src/*.js']
+        //cancat
+        concat:{
+            dist:{
+                src:sources,
+                dest:'dist/S3ToolBox.js'
             }
         },
+
         //uglify  compress
         uglify:{
             dist:{
                 files:[
-                    {src:'src/S3ToolBox.js',dest:'dist/S3ToolBox.min.js'}
+                    {
+                        src:'<%= concat.dist.dest %>',
+                        dest:'dist/S3ToolBox.min.js'
+                    }
                 ]
             }
         }
@@ -56,11 +57,8 @@ module.exports = function(grunt) {
         requireResolution: true
     });
 
-    //test task     commond:    grunt:test
-    grunt.registerTask('test',['jshint']);
-
     //build task
-    grunt.registerTask('build',['clean','uglify']);
+    grunt.registerTask('build',['clean','concat','uglify']);
 
     grunt.registerTask('default',['build']);
 };
