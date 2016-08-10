@@ -5,34 +5,14 @@
     <title>Title</title>
     <script src ="../js/jquery.min.js"></script>
     <script src = "../dist/S3ToolBox.js"></script>
-    <style>
-        div{
-            margin:2px;
-            padding:3px;
-            border:1px solid;
-            height:500px;
-            width:300px;
-        }
-        button{
-            margin:5px;
-            border:2px solid;
-            padding:10px;
-        }
-        .red{
-            background-color:#00f;
-        }
-        .lightred{
-            background-color:#88f;
-        }
-    </style>
-
 </head>
 <body>
+
 <div>
     <h1>json2form</h1>
     <button id='json2form'>json2form</button>
-    <button id='clearForm'>clearForm</button>
     <button id='form2jsom'>form2jsom</button>
+    <button id='clearForm'>clearForm</button>
     <form id = "formid">
         <input type = "text" name="name1" >
         <input name ="name2" type = "numver">
@@ -73,7 +53,6 @@
     <h1>template</h1>
     <div id = "temp"></div>
 </div>
-
 <script type="text/html" id = "template">
     <div>
         <h6><%= data.title%></h6>
@@ -83,17 +62,43 @@
             for(var i=0;i<list.length;i++){
             %>
             <li>
-                <%= list%>
+                <%= list[i]%>
             </li>
             <% } %>
         </ul>
     </div>
 </script>
 
+<h1>eventManager</h1>
+<button click = "hello">say hello</button>
+<input type = "text" focus = "focus()">
+
+
+<h1>calculator</h1>
+
+<p>四则运算</p>
+<p>   add: 加法add(a,b)   //a+b</p>
+<p>    sub: 减法sub(a,b)   //a-b</p>
+<p>   mul: 乘法 mul(a,b)</p>
+<p>    div: 除法  div(a,b)</p>
+
+<p>   金额问题</p>
+<p>    addComma: 增加金额的逗号 addComma(a)    //1000--->1,000</p>
+<p>    removeComma: 一处逗号   removeComma(a)   //1,000--->1000</p>
+
+<p>    数组运算</p>
+<p>   arrMul: arrMul(a,b)          //a[0]*b[0]  a[1]*b[1] 返回一个新数组</p>
+<p>   arrAdd: addArr(a,b)</p>
+<p>   arrSub: subArr(a,b)</p>
+<p>   arrAddNum: arrAddNum(a,n)   //a[i]+n  ---b[i]</p>
+<p>   arrSubNum: arrSubNum(a,n)</p>
+<p>    arrMulNum: arrMulNum(a,n)</p>
+
+
 </body>
 <script>
     $(function(){
-
+        //json2form
         var obj = {
             name1:"张三",
             name2:"历史",
@@ -103,21 +108,30 @@
             name6:['bbbb','keke']
         };
         var form = document.getElementById('formid');
-
         $('#json2form').on("click",function(){
             S3.form.json2form(form,obj);
         });
         $('#clearForm').on("click",function(){
-            clearForm(form);
+            S3.form.clearForm(form);
         });
         $('#form2jsom').on("click",function(){
            console.log(S3.form.form2json(form));
         });
 
+        //template
         var template = document.getElementById('template');
-        var dataobj = {title:'haha',list:'222'};
+        var dataobj = {title:'haha',list:['111',"222","333"]};
         var compile = S3.template("template",{data:dataobj});
         document.getElementById('temp').innerHTML =compile;
-    })
+
+        S3.eventManager.init();
+    });
+    function hello(element){
+        console.log(element);
+        console.log("hello world")
+    }
+    function focus(){
+        console.log("focus")
+    }
 </script>
 </html>

@@ -221,7 +221,7 @@
          * @returns {*|string|{example, overwrite, disable_template_processing}|void|XML}
          */
         var removeComma = function (value) {
-            return value === undefined ? value : value.replace(/,/g, '');
+            return value === undefined ? value : value.replace(/\,/g, '');
         };
 
     var calculator = {

@@ -8,8 +8,8 @@ module.exports = function(grunt) {
         'src/forms.js',
         'src/calculator.js',
         'src/eventManager.js',
-        'src/btn.js',
-        'src/template.js'
+        'src/template.js',
+        'src/utils.js'
     ];
     
     
@@ -22,9 +22,6 @@ module.exports = function(grunt) {
         clean:{
             dist: {
                 src: ['dist/*.js']
-            },
-            test:{
-                src:['test/*.js']
             }
         },
 

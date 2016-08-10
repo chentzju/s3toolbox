@@ -325,7 +325,7 @@
     var SPLIT2_RE = /^$|,+/;
 
 
-// 获取变量
+    // 获取变量
     function getVariable (code) {
         return code
             .replace(REMOVE_RE, '')
@@ -334,10 +334,10 @@
             .replace(NUMBER_RE, '')
             .replace(BOUNDARY_RE, '')
             .split(SPLIT2_RE);
-    };
+    }
 
 
-// 字符串转义
+    // 字符串转义
     function stringify (code) {
         return "'" + code
             // 单引号与反斜杠转义
