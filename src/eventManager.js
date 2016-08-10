@@ -62,6 +62,17 @@
             event.cancelBubble = true;
         }
     };
+    
+    /**
+     * 关闭默认事件
+     * @param event
+     */
+    var preventDefault = function(event){
+        if(event.preventDefault)
+            event.preventDefault();
+        else
+            event.returnValue = false;
+    }
 
     /**
      * 初始化事件绑定,通过检测元素的属性来完成绑定事件
@@ -103,6 +114,7 @@
         removeHandler:removeHandler,
         getEvent:getEvent,
         getTarget:getTarget,
-        stopPropagation:stopPropagation
+        stopPropagation:stopPropagation,
+        preventDefault:preventDefault
     };
 }(S3);
