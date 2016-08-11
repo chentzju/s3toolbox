@@ -58,7 +58,7 @@
     }
     /**
      * 应该跳转到某个静态errorinfo页面，
-     * 如果没有正常跳转，则弹出报错
+     * 如果没有定义处理系统错误的代码，则弹出报错
      * @param e
      */
     var localOnError = function (e){
@@ -105,23 +105,34 @@
      * @param uri
      */
     var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){
+        //查询是否有S3的定义
         testConfig();
+        //如果没有custId和rootPath 无法进行了
         if(custId == null || rootPath == null)
             return;
+        //id必输
         if(!id)
             return;
+        //如果是S3，那没问题
         if(!appId)
             appId = custId;
+        //默认POST
         if(!httpMethod)
             httpMethod = 'POST';
+        //默认异步调用
         if(!async)
             async = true;
+        //如果没有地址，默认是S3指定
         if(!uri)
             uri = rootPath + '~main/ajax.php';
+        //如果没有指定系统错误处理函数,则使用默认函数
         if(!onError)
             onError = localOnError;
+        //处理参数
         var paramObj =treatParams(param);
         var paramStr = dataSetIdList + '=' + encodeURIComponent(id) + '&' + dataSetParams + '=' + encodeURIComponent(JSON.stringify(paramObj)) + '&'+dataSetAppId+'=' + encodeURIComponent(appId);
+
+        //o了，可以进行ajax调用了
         try{
             ajax(uri, paramStr, callback, async, httpMethod);
         }catch(e){
