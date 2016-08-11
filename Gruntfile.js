@@ -5,11 +5,13 @@ module.exports = function(grunt) {
 
     var sources = [
         'src/S3ToolBox.js',
+        'src/ajax.js',
         'src/forms.js',
         'src/calculator.js',
         'src/eventManager.js',
         'src/template.js',
-        'src/utils.js'
+        'src/utils.js',
+        'src/json.js'
     ];
     
     
@@ -29,7 +31,7 @@ module.exports = function(grunt) {
         concat:{
             dist:{
                 src:sources,
-                dest:'dist/S3ToolBox.js'
+                dest:'dist/s3toolbox.js'
             }
         },
 
@@ -39,7 +41,7 @@ module.exports = function(grunt) {
                 files:[
                     {
                         src:'<%= concat.dist.dest %>',
-                        dest:'dist/S3ToolBox.min.js'
+                        dest:'dist/s3toolbox.min.js'
                     }
                 ]
             }

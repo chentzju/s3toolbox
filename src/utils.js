@@ -11,6 +11,22 @@
             return val.replace(/-/g,'/');
         }
 
+        function deepCopy(obj){
+            var newobj;
+            if(isArray(obj)){
+                newobj = obj.slice();
+                return newobj;
+            }
+            if(isObject(obj)){
+                for(key in obj){
+                    if(isObject(obj[key]))
+                        newobj[key] = deepCopy(obj[key]);
+                    else
+                        newobj[key] = obj[key];
+                }
+            }
+        }
+
         /**
          * 判断是否数组
          */
@@ -132,10 +148,12 @@
          var extend = function (obj, context) {
             if (!isPlainObject(context))
                 return obj ? obj : {};
-            for (var key in context) {
-                obj[key] = context[key];
+            else{
+                for (var key in context) {
+                    obj[key] = context[key];
+                }
+                return obj;
             }
-            return obj;
         };
 
         /**
@@ -144,8 +162,10 @@
          * @returns {*}
          */
         var clone = function (obj) {
-            if (!isObject(obj)) return obj;
-            return isArray(obj) ? obj.slice() : extend({}, obj);
+            if (!isObject(obj))
+                return obj;
+            else
+                return deepCopy(obj);
         };
 
         /**

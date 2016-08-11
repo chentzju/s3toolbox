@@ -1,6 +1,7 @@
 # S3ToolBox工具箱简介
 
-S3ToolBox工具箱主要用来实现一些通用的js功能，来简化开发过程中的重复工作，工具箱按照模块开发，可扩展，主要用来完成如通用功能、通用计算、表单、事件管理等常用的模块。S3ToolBox依赖jquery,使用时，需要提前加载jquery。
+S3ToolBox工具箱主要用来实现一些通用的js功能，来简化开发过程中的重复工作，工具箱按照模块开发，可扩展，主要用来
+完成如通用功能、通用计算、表单、事件管理等常用的模块。S3ToolBox依赖jquery,使用时，需要提前加载jquery。
 
 本文介绍了工具箱的组成和使用方法
 
@@ -19,20 +20,86 @@ S3ToolBox工具箱主要用来实现一些通用的js功能，来简化开发过
     utils.js            通用模块
 
 
-## 1.ajax
-通过调用ajax来完成前后台的数据调用,与原来的execjava执行效果类似,但稍有不同;
+## 1.ajax调用
+通过调用ajax来完成前后台的数据调用,ajax封装后提供两个接口，其中S3.ajax方法为通用的ajax调用方法，适用于所有ajax调用；
+而execjava方法是基于espresso框架原execjava方法，合并原core.js和coresupport.js的功能，而实现的一个方法，实现的原理基
+本相同，细节稍有不同。
 
-1.使用S3命名空间
+1.使用S3命名空间,调用时需要使用S3.execjava,S3.ajax
 
-2.没有返回值，返回值在回调函数的data变量中
+2.没有返回值，返回值在回调函数的data变量中,所以需要声明回调函数或匿名回调
 
+3.为了防止后台数据源错乱，appid改为必输项
 
+#### 函数定义
+
+```javascript
+    /**
+     * ajax方法，通用
+     * @param url        地址
+     * @param paramStr   参数
+     * @param callback  回调函数
+     * @param async     是否异步，true 异步，false同步
+     * @param method    报文提交方式，默认POST
+     */
+    var ajax = function(url,paramStr,callback,async,method){...}
+
+    /**
+     * execjava，与S3的原execjava基本相同，稍作了修改
+     * @param id        后台bean
+     * @param param     参数对象
+     * @param appId        应用编号
+     * @param callback      回调函数
+     * @param onError       错误处理函数
+     * @param async         异步标识，默认true  默认采用异步调用
+     * @param httpMethod       调用方式，默认POST
+     * @param uri               调用地址，默认rootPath/~main/ajax.php
+     */
+    var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){...}
+```
+#### 函数调用(主要示例execjava)
 例如：
 
 ```javascript
-S3.execjava("userinfobean",param,function(data){
-//do something
-},true)
+var param = {};
+var appid = 'usermanage'
+var id = "userAuthenBean.getPublicKey"
+S3.execjava(id,param,appid,function(result){
+        	if(result.retCode != "200"){
+                $("#errorTip").show();
+                $("#loginres").html(errinfo["40001"]);
+                $("#validate").next().attr("src","captcha.php?'+Math.random();");
+            }
+            //rsa加密
+            var rsakey = new RSAKey();
+    		rsakey.setPublic(result.modulus,result.exponent);
+    		var pwd = rsakey.encrypt(password);
+            param.loginName = loginName;
+            param.password = pwd.toString(16);
+            ...
+        },function(e){
+			var uri = S3Config.getConfig("s3_root") + "~main/" + "errorInfo.php?error="+e;
+			window.location.href = uri;
+        })
+```
+
+也可以将回调函数和错误处理函数单独写出来
+```javascript
+var success = function(data){
+      if(result.retCode != "200"){
+            $("#errorTip").show();
+            $("#loginres").html(errinfo["40001"]);
+            $("#validate").next().attr("src","captcha.php?'+Math.random();");
+      }
+      ...
+};
+var onError = function(e){
+    var uri = S3Config.getConfig("s3_root") + "~main/" + "errorInfo.php?error="+e;
+    window.location.href = uri;
+}
+
+//再调用execjava
+S3.execjava(id,param,appid,success,onError);
 ```
 
 ## 2.计算器
@@ -145,7 +212,49 @@ clearForm(form)         //清空表单          参数：表单对象
 
 例子：
 ```
+<form id = "formid">
+        <input type = "text" name="name1" >
+        <input name ="name2" type = "text">
+        <input name = "name3" type = "checkbox" value ="aaaa">aaaa
+        <input name = "name3" type ="checkbox" value ="aaab">aaab
+        <input name = "name3" type ="checkbox" value ="aaac">aaac
+
+        <input name = "name4" type = "radio" value ="aaaa">aaaa
+        <input name = "name4" type ="radio" value = "aaab">aaab
+        <input name = "name4" type ="radio" value = "aaac">aaac
+        <select name = "name5">
+                <option value="aaaa">
+                    haha
+                </option>
+                <option value ="bbbb">
+                    hehe
+                </option>
+                <option value ="keke">
+                    keke
+                </option>
+        </select>
+        <select name = "name6" multiple>
+            <option value="aaaa">
+                haha
+            </option>
+            <option value ="bbbb">
+                hehe
+            </option>
+            <option value ="keke">
+                keke
+            </option>
+        </select>
+    </form>
+```
+```
 var form = document.getElementById('formid');
+var obj = {
+     name1:"张三",
+     name2:"历史",
+     name3:['aaaa','aaac'],
+     name4:'aaab',
+     name5:'bbbb',
+};
 S3.form.json2form(form,obj);        //json导入表单
 console.log(S3.form.form2json(form));   //表单导出json
 S3.form.clearForm(form);                //清空表单
