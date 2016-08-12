@@ -169,7 +169,7 @@
         };
 
         /**
-         * 日期比较
+         * 日期比较  date1 小于date2 返回true  否则返回false
          * @param date1
          * @param date2
          * @returns {boolean}
