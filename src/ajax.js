@@ -43,11 +43,10 @@
         }
     };
 
+    //为S3开发的代码
     var dataSetIdList = "__ids";
     var dataSetParams = "__params";
     var dataSetAppId = "__appId";
-
-    //为S3开发的代码
     var custId,rootPath;
 
     function testConfig(){
@@ -95,14 +94,14 @@
 
     /**
      * execjava，与S3的execjava类似
-     * @param id
-     * @param param
-     * @param appId
-     * @param callback
-     * @param onError
-     * @param async
-     * @param httpMethod
-     * @param uri
+     * @param id            后台路由
+     * @param param         参数
+     * @param appId         应用编号
+     * @param callback      回调函数
+     * @param onError   错误处理
+     * @param async   异步标识
+     * @param httpMethod    调用方式
+     * @param uri           调用路径
      */
     var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){
         //查询是否有S3的定义

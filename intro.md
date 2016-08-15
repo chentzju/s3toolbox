@@ -27,7 +27,7 @@ S3ToolBox工具箱主要用来实现一些通用的js功能，来简化开发过
 
 1.使用S3命名空间,调用时需要使用S3.execjava,S3.ajax
 
-2.没有返回值，返回值在回调函数的data变量中,所以需要声明回调函数或匿名回调
+2.没有返回值，返回值在回调函数的data变量中,所以需要使用回调函数名或匿名函数作参数
 
 3.为了防止后台数据源错乱，appid改为必输项
 
@@ -259,7 +259,41 @@ S3.form.json2form(form,obj);        //json导入表单
 console.log(S3.form.form2json(form));   //表单导出json
 S3.form.clearForm(form);                //清空表单
 ```
-## 5.模板引擎
+
+## 5.页码组件
+page页码组件，主要实现页面上数据页码的管理，通过调用页面插件，可以轻松管理页面上的table页码。页码管理封装在S3.page中，并
+只对外提供一个S3.page接口，该接口返回一个Page对象，对象包含两个属性：init和setPage，通常init为自动调用，setPage需要主
+动调用。
+
+当外部代码需要生成一个page组件时，通过S3.page(container,callback,options)接口调用，得到一个绘制好的page组件，并将这个组件
+的对象返回。该对象自主封装了点击翻页的响应功能，因此无需再次设定页码，只需要设定点击的callback事件即可，callback事件函数的
+默认参数是当前点击的页码。如果需要手动设置页码，也可以通过返回对象的setPage(page)来实现。
+
+options默认参数
+      currentpage: 1,    表示当前的页码是第1页
+      pagecount: 10      表示页码的总数共10页
+
+ex:
+```javascript
+    var container = document.getElementById('container');
+    //定义组件  设定点击页码的回调函数和属性选型
+    var pageClick = function(page){
+        //加载这一页的数据
+    }
+    //一个30页
+    var options = {
+        pagecount: 30
+    }
+
+    //生成组件
+    var page = S3.page(container,callback,options); //在container元素对象中创建一个页码组件，并返回一个对象
+
+    //不建议使用，但是如果有特殊需求，可以使用
+    //跳转到第8页
+    page.setPage(8);
+```
+
+## 6.模板引擎
 S3ToolBox对原来我们熟悉的arttemplate进行了封装，精简了里面的一些不常用操作，保留原来的核心，封装在S3.template对象中，用
 法与原来的arttemplate用法一直，只不过在S3命名空间下。
 

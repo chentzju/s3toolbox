@@ -95,6 +95,12 @@
 <p>    arrMulNum: arrMulNum(a,n)</p>
 
 
+
+<h1>Page</h1>
+<div id = "page"></div>
+
+<div id = "page2"></div>
+
 </body>
 <script>
     $(function(){
@@ -124,6 +130,18 @@
         var compile = S3.template("template",{data:dataobj});
         document.getElementById('temp').innerHTML =compile;
 
+        var container = document.getElementById("page");
+        var page1 = S3.page(container, function(page){
+                    console.log('正在加载第'+page+'页的数据');
+                }, {
+            currentpage:4,pagecount:20,
+        });
+        var container2 = document.getElementById("page2");
+        var page2 = S3.page(container2, function(page){
+            console.log('这是第二个页码的打印数据，正在加载'+page+'页的数据');
+        }, {
+            currentpage:6,pagecount:20,
+        });
         S3.eventManager.init();
     });
     function hello(element){

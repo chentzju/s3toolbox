@@ -234,14 +234,53 @@
             }
         };
 
+        /**
+         * 重定义array.map
+         * @param array
+         * @param fn
+         * @returns {Array}
+         */
+        var map = function(array,fn){
+            if(isArrayLike(array)){
+                var newAry = [];
+                for(var i =0;i<array.length;i++){
+                    newAry.push(fn(array[i]));
+                }
+                return newAry;
+            }else{
+                throw new Error('请传入正确参数');
+            }
+        };
+
+        /**
+         *
+         * @param str
+         * @returns {*|{dist}|XML|{example, overwrite, disable_template_processing}|void|string}
+         */
+        var trim = function(str){
+            return str.replace(/(^\s*)|(\s*$)/g, '');
+        };
+
+        if(!String.prototype.trim){
+            String.prototype.trim = function(){
+                return trim(this);
+            };
+        }
+
         if(!Array.prototype.forEach){
             Array.prototype.forEach = function(fn){
                 return forEach(this,fn);
             }
         }
+
         if(!Array.prototype.some){
             Array.prototype.some = function(fn){
                 return some(this,fn);
+            }
+        }
+        if(!Array.prototype.map){
+            Array.prototype.map = function(fn){
+                return map(this,fn);
             }
         }
 
@@ -262,9 +301,7 @@
             extend: extend,
             clone: clone,
             dateCompare: dateCompare,
-            isMobile: isMobile,
-            forEach: forEach,
-            some: some
+            isMobile: isMobile
         };
-    toolBox.utils = utils;
+        toolBox.utils = utils;
 }(S3);
