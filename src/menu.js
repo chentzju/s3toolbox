@@ -62,7 +62,7 @@
         var content,title,child,body;
         array.forEach(function(list){
             content = document.createElement('li');
-            if(list.title) {
+            if(list['title']) {
                 title = document.createElement('div');
                 title.setAttribute('class','menu-title');
                 title.innerHTML = list.title;

@@ -31,7 +31,7 @@
          * 判断是否数组
          */
         var isArray = Array.isArray || function (obj) {
-            return Array.prototype.toString.call(obj) === '[object Array]';
+            return Object.prototype.toString.call(obj) === '[object Array]';
         };
 
         var isArrayLike = function(obj){
