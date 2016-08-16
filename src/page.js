@@ -174,6 +174,14 @@
             return clickpage;
         };
 
+        /**
+         * 页码组件
+         * @param container
+         * @param callback
+         * @param option
+         * @returns {*}
+         * @constructor
+         */
         var Page = function(container,callback,option){
             if(!container || !callback)
                 return null;

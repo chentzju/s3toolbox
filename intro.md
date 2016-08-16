@@ -142,9 +142,24 @@ S3.cal.arrAddNum(c,a)  //return [0.3,1.2]
 事件管理器实现事件的绑定、解绑、事件对象的获取、目标获取以及事件对象管理。同事支持页面属性自动绑定事件。事件的方法封装在
 S3.eventManager对象中，总共包含如下方法：
 ```
+/**
+* 核心函数，实现页面中的事件自动绑定
+*/
 init()              //初始化绑定，搜索页面属性并绑定相关事件
 addTypes(type)     //增加自动绑定的事件类型
+/**
+* 满足浏览器兼容性的事件绑定函数
+* @param element  元素
+* @param type   事件类型  如：click
+* @param handler    处理函数
+*/
 addHandler(element,type,handler)         //绑定事件
+/**
+* 事件解除绑定，考虑浏览器兼容性
+* @param element    元素
+* @param type   事件类型
+* @param handler    处理函数
+*/
 removeHandler(element,type,handler)       //解除绑定
 getEvent(event)            //获取当前事件
 getTarget(event)           //获取触发事件的对象
@@ -260,7 +275,58 @@ console.log(S3.form.form2json(form));   //表单导出json
 S3.form.clearForm(form);                //清空表单
 ```
 
-## 5.页码组件
+## 5.菜单组件
+菜单组件实现一个简单的菜单，通过传入的数据对象生成一个简单的菜单。菜单组件封装在S3.menu对象中，对象包含3个属性，分别为
+renderMenu,makeMenu和cssOff。作用分别是，渲染菜单到容器，制作菜单和关闭默认样式。
+
+菜单组件提供了默认的CSS样式表，如果对默认样式不满意，可以通过设定CSS默认样式表关闭，再使用自己的设计来进行排版和样式布局。
+
+接口
+```
+/**
+* 渲染菜单
+* @param array
+* @param callback
+* @param container
+*/
+renderMenu(array,callback,container)
+/**
+* 生成菜单，返回一个菜单HTML对象
+* @param array
+* @param callback
+*/
+makeMenu(array,callback)
+cssOff()
+```
+参数类型
+
+    renderMenu: 接受一个数组array，一个回调函数callback和一个容器container，数组要求按照如下格式:
+                var menu = [
+                            {title:'title1',
+                                content:["content1","content2","content3"]},
+                            {title:'title2',
+                                content:["content2","content2","content3"]},
+                        ];
+                回调函数中的参数是组件被点击的时候的点击目标元素
+                容器是存放菜单的地方
+
+    makeMenu:  参数array与renderMenu相同，callback也与render相同，makeMenu返回一个组装好的组件的HTML对象
+
+    cssOff:  关闭默认的CSS样式表，此时，需要开发者自己设置菜单的样式,需要在使用makeMenu和renderMenu之前调用才能生效
+
+样例:
+```javascript
+var menu = [
+         {title:'title1', content:["content1","content2","contetn3"]},
+         {title:'title2', content:["content2","content2","contetn3"]},
+        ];
+S3.menu.renderMenu(menu,function(e){console.log("点击了"+e)},"menu");
+//上面的语句，相当于
+//var container = document.getElementById('menu');
+//var node = S3.menu.makeMenu(menu,function(e){console.log()})
+//container.appendChild(node);
+```
+## 6.页码组件
 page页码组件，主要实现页面上数据页码的管理，通过调用页面插件，可以轻松管理页面上的table页码。页码管理封装在S3.page中，并
 只对外提供一个S3.page接口，该接口返回一个Page对象，对象包含两个属性：init和setPage，通常init为自动调用，setPage需要主
 动调用。
@@ -272,28 +338,39 @@ page页码组件，主要实现页面上数据页码的管理，通过调用页�
 options默认参数
       currentpage: 1,    表示当前的页码是第1页
       pagecount: 10      表示页码的总数共10页
+```javascript
+        /**
+         * 页码组件
+         * @param container
+         * @param callback
+         * @param option
+         * @returns {*}
+         * @constructor
+         */
+         page(container,callback,options)
+```
 
 ex:
 ```javascript
-    var container = document.getElementById('container');
-    //定义组件  设定点击页码的回调函数和属性选型
-    var pageClick = function(page){
+var container = document.getElementById('container');
+//定义组件  设定点击页码的回调函数和属性选型
+var pageClick = function(page){
         //加载这一页的数据
-    }
-    //一个30页
-    var options = {
+}
+//一共30页
+var options = {
         pagecount: 30
-    }
+}
 
-    //生成组件
-    var page = S3.page(container,callback,options); //在container元素对象中创建一个页码组件，并返回一个对象
+//生成组件
+var page = S3.page(container,callback,options); //在container元素对象中创建一个页码组件，并返回一个对象
 
-    //不建议使用，但是如果有特殊需求，可以使用
-    //跳转到第8页
-    page.setPage(8);
+//不建议使用，但是如果有特殊需求，可以使用
+//跳转到第8页
+page.setPage(8);
 ```
 
-## 6.模板引擎
+## 7.模板引擎
 S3ToolBox对原来我们熟悉的arttemplate进行了封装，精简了里面的一些不常用操作，保留原来的核心，封装在S3.template对象中，用
 法与原来的arttemplate用法一直，只不过在S3命名空间下。
 
@@ -324,7 +401,7 @@ var html = S3.template("template",{data:dataobj}); //模板id和数据对象
 document.getElementById('temp').innerHTML =html;
 ```
 
-## 6.通用方法
+## 8.通用方法
 通用方法中封装了一些在平时开发中会经常使用到的方法，主要包括
 ```
 isArray(a)           //判断a是否为数组
