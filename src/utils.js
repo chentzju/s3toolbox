@@ -34,9 +34,22 @@
             return Object.prototype.toString.call(obj) === '[object Array]';
         };
 
+        /**
+         * 是否是类数组的结构
+         * @param obj
+         * @returns {boolean}
+         */
         var isArrayLike = function(obj){
             return !!(isArray(obj) || obj.length);
 
+        };
+        /**
+         *
+         * @param obj
+         * @returns {boolean}
+         */
+        var isFunction = function(obj){
+            return typeof obj === 'function';
         };
 
         /**
@@ -254,6 +267,23 @@
 
         /**
          *
+         * @param array
+         * @param fn
+         * @returns {Array}
+         */
+        var filter = function(array,fn){
+            if(isArrayLike(array)){
+                var newAry = [];
+                for(var i = 0;i<array.length;i++){
+                    if(fn(array[i]))
+                        newAry.push(array[i]);
+                }
+                return newAry;
+            }
+        };
+
+        /**
+         *
          * @param str
          * @returns {*|{dist}|XML|{example, overwrite, disable_template_processing}|void|string}
          */
@@ -270,6 +300,12 @@
         if(!Array.prototype.forEach){
             Array.prototype.forEach = function(fn){
                 return forEach(this,fn);
+            }
+        }
+
+        if(!Array.prototype.filter){
+            Array.prototype.filter = function(fn){
+                return filter(this,fn);
             }
         }
 
@@ -290,6 +326,8 @@
          */
         var utils = {
             isArray: isArray,
+            isArrayLike:isArrayLike,
+            isFunction:isFunction,
             isNumber: isNumber,
             isObject: isObject,
             isPlainObject: isPlainObject,
@@ -301,7 +339,8 @@
             extend: extend,
             clone: clone,
             dateCompare: dateCompare,
-            isMobile: isMobile
+            isMobile: isMobile,
+            forEach:forEach
         };
         toolBox.utils = utils;
 }(S3);

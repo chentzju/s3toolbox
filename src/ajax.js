@@ -53,6 +53,9 @@
         if(!toolBox.utils.isUndefined(S3Config)){
             custId = S3Config.getConfig("s3_custId");
             rootPath = S3Config.getConfig("s3_root");
+            return true;
+        }else{
+            return false;
         }
     }
     /**
@@ -93,7 +96,7 @@
     };
 
     /**
-     * execjava，与S3的execjava类似
+     * execjava，与S3的execjava类似  需要S3config支持
      * @param id            后台路由
      * @param param         参数
      * @param appId         应用编号
@@ -105,7 +108,10 @@
      */
     var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){
         //查询是否有S3的定义
-        testConfig();
+        if(!testConfig()){
+            throw new Error("No S3Config detected!! Please make sure S3Config.php is properly included.");
+            return;
+        }
         //如果没有custId和rootPath 无法进行了
         if(custId == null || rootPath == null)
             return;
