@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S3.table用法样例</title>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
+</head>
+<body>
+<h1>S3.table用法样例</h1>
+<button id="maketable">点击这里生成一个表格</button>
+<button id="renderdata">点击这里更新表格数据</button>
+<div id = 'table1'></div>
+<script>
+    $(function(){
+        //数据，在实际项目中来自后台，但需要经过处理
+        var data1 = {
+            title: ["content1","content2",{tagName:'select',props:{},children:[
+                {tagName:'option',props:{},children:['haha']},
+                {tagName:'option',props:{},children:['heihei']}
+            ]},'title4'],
+            data:[
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                },
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                },
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                }
+            ]
+        };
+        var data2 = [
+            {name:'张三',money:'25',count:'审核'},
+            {name:'张三',money:'35',count:'审核'},
+            {name:'张三',money:'15',count:'审核'}
+        ];
+        var opt = {
+            start:[
+                {
+                    tagName:'input',
+                    props:{type:'checkbox'}
+                }
+            ],
+            end:[
+                {
+                    tagName:'button',
+                    props:{"class":'mybutton'},
+                    children:['点击']
+                },
+                {
+                    tagName:'button',
+                    props:{"class":'mybutton'},
+                    children:['点击']
+                }
+            ]
+        };
+        var table;
+        $('#maketable').on('click',function(){
+            table = S3.table('table1',data1,callback,opt);
+        });
+        $('#renderdata').on('click',function(){
+            table.setData(data2);
+        });
+    });
+    function callback(element){
+        console.log("你点击了"+element+"在这里你可以处理点击事件了");
+    }
+</script>
+</body>
+</html>
