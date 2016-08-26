@@ -4,20 +4,6 @@
 +function(toolbox){
 
     /**
-     * 绑定事件的函数
-     * @param table
-     * @param callback
-     */
-    function bindCallBack(table,callback){
-        var em = toolbox.eventManager;
-        em.addHandler(table,'click',function(){
-            var evt = em.getEvent(event);
-            var target = em.getTarget(evt);
-            callback(target);
-        });
-    }
-
-    /**
      *  生成表头的虚拟DOM对象
      * @param headdata
      * @param options
@@ -36,7 +22,7 @@
         if(options &&　options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el(item.tagName,item.props,item.child));
+                startChild.push(el.makeElement(item.tagName,item.props,item.children));
             });
         }
         startCol = el('th',null,startChild);
@@ -44,6 +30,9 @@
         //行的子元素
         rowchild.push(startCol);
         headdata.forEach(function(item){
+            if(utils.isPlainObject(item)){
+                item = el.makeElement(item.tagName,item.props,item.children);
+            }
             rowchild.push(el('th',null,[item]));
         });
 
@@ -73,27 +62,26 @@
         //表体的子元素
         var bodychild=[];
 
-
         //处理start
         var startCol,startChild = [];
         if(options &&　options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el(item.tagName,item.props,item.child));
+                startChild.push(el.makeElement(item.tagName,item.props,item.children));
             });
         }
-        startCol = el('td',null,startChild);
+        startCol = el('th',null,startChild);
+
 
         //处理end
         var endCol,endChild = [];
         if(options &&　options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
-                endChild.push(el(item.tagName,item.props,item.child));
+                endChild.push(el.makeElement(item.tagName,item.props,item.children));
             });
         }
         endCol = el('td',null,endChild);
-
 
         //对每一行
         for(var i =0;i<bodydata.length;i++){
@@ -102,9 +90,7 @@
             if(startCol){
                 rowchild.push(startCol);
             }
-            for(var key in rowdata){
-                rowchild.push(el('td',{name:key},[rowdata[key]]));
-            }
+            for(var key in rowdata) rowchild.push(el.makeElement('td', {name: key}, [rowdata[key]]));
             if(endCol) {
                 rowchild.push(endCol);
             }
@@ -115,36 +101,55 @@
 
         //生成标题的虚拟DOM
         var tbody = el('tbody',null,bodychild);
+
         return tbody;
     }
 
     /**
+     * 绑定事件的函数
+     * @param table
+     * @param callback
+     */
+    function bindCallBack(table,callback){
+        var em = toolbox.eventManager;
+        em.addHandler(table,'click',function(){
+            var evt = em.getEvent(event);
+            var target = em.getTarget(evt);
+            callback(target);
+        });
+    }
+
+    /**
      *
-     * @param tableId  表格id
-     * @param data
+     * @param parent 父容器
+     * @param data   数据 包含 表头和标题
      * {
-     *      title:['title1','title2',xxx,xxx],   //标题
+     *      title:['title1','title2',xxx,xxx],   //表头
      *      data:[{},{},{},{},{}]  //5行
      * }
      * @param callback  回调函数 //事件委托，参数为点击对象
-     * @param options  结构：
+     * @param options  表第一列和最后一列需要展示的内容，固定结构：
      * {
      *      start:{
-     *          tagName:'input',//必须是string
-     *          props:{type:'checkbox',name:'checkboxname',class:'checkboxclass'},//必须是对象
-     *          child:['内容']//必须是数组
+     *          [
+         *          {
+         *          tagName:'input',//必须是string
+         *          props:{type:'checkbox',name:'checkboxname','class':'checkboxclass'},//必须是对象
+         *          children:['内容']//必须是数组
+         *          }
+     *          ]
      *      }
      *      end:{
      *          [
      *              {
      *                  tagName:'button',//必须是string
-     *                  props:{name:'buttonname',class:'buttonclass'},//必须是对象
-     *                  child:['按钮1']//必须是数组
+     *                  props:{name:'buttonname','class':'buttonclass'},//必须是对象
+     *                  children:['按钮1']//必须是数组
      *              },
      *              {
      *                  tagName:'button',//必须是string
-     *                  props:{name:'buttonname',class:'buttonclass'},//必须是对象
-     *                  child:['按钮1']//必须是数组
+     *                  props:{name:'buttonname','class':'buttonclass'},//必须是对象
+     *                  children:['按钮2']//必须是数组
      *              }
      *          ]
      *      }
@@ -152,23 +157,19 @@
      * @returns {Table.makeTable}
      * @constructor
      */
-    var Table = function(tableId,data,callback,options){
-        return new Table.prototype.makeTable(tableId,data,callback,options);
+    var Table = function(parent,data,callback,options){
+        return new Table.prototype.makeTable(parent,data,callback,options);
     };
-
-    //缓存数据
-    var tableTemp;
-    var tableHead;
-    var headTemp;
-    var callbackTemp;
-    var optionsTemp;
 
     Table.prototype = {
         constructor:Table,
-        makeTable:function(tableId,data,callback,options){
+        makeTable:function(parent,data,callback,options){
 
-            if(tableId == null || data == null || data.data == undefined || !toolbox.utils.isArray(data.data))
+            if(parent == null || data == null || data.data == undefined || !toolbox.utils.isArray(data.data))
                 return null;
+
+            //缓存数据
+            var headTemp;
 
             //判断是否有表头
             if(data.title && toolbox.utils.isArray(data.title)){
@@ -176,68 +177,61 @@
             }
             //是否有回调函数
             if(callback && toolbox.utils.isFunction(callback)){
-                callbackTemp = callback;
-            }
-            //是否有特殊属性
-            if(toolbox.utils.isPlainObject(options)){
-                optionsTemp = options;
+                this.callback = callback;
             }
 
             //渲染DOM
             var thead = makeHead(headTemp,options);
             var tbody = makeBody(data.data,options);
-            var table = typeof tableId === "string" ? document.getElementById(tableId) : tableId;
+            var table,child=[];
             if(thead) {
-                tableHead = thead.render();
-                table.appendChild(tableHead);
+                this.thead = thead;
+                child.push(thead);
             }
             if(tbody)
-                table.appendChild(tbody.render());
-            if(callbackTemp)
-                bindCallBack(table,callbackTemp);
-            tableTemp = table;
+                child.push(tbody);
+            table = toolbox.element('table',{},child).render();
+
+
+            if(this.callback)
+                bindCallBack(table,this.callback);
+
+            parent = typeof parent == 'string'?document.getElementById(parent):parent;
+            parent.innerHTML = "";
+            parent.appendChild(table);
+
+            this.options = options;
+            this.parent = parent;
+
+            //如果有排序功能，需要默认排序规则
+            // this.sort = 'default';
+            //this.sortType = '0';
             return this;
         },
-        setHead:function(tableId,head,callback,options){
-            if(tableId == null || head == null || !toolbox.utils.isArray(head))
-                return null;
-            //判断是否有表头
-            if(head && toolbox.utils.isArray(head)){
-                headTemp = head;
-            }
-            //是否有回调函数
-            if(callback && toolbox.utils.isFunction(callback)){
-                callbackTemp = callback;
-            }
-            //是否有特殊属性
-            if(toolbox.utils.isPlainObject(options)){
-                optionsTemp = options;
-            }
-            //渲染DOM
-            var thead = makeHead(headTemp,options);
-            var table = typeof tableId === "string" ? document.getElementById(tableId) : tableId;
-            if(thead) {
-                tableHead = thead.render();
-                table.appendChild(tableHead);
-            }
-            if(callbackTemp)
-                bindCallBack(table,callbackTemp);
-            tableTemp = table;
-            return this;
-        },
+        /**
+         * 更新表体内容
+         * @param data
+         * @returns {Table}
+         */
         setData:function(data){
-            if(!toolbox.utils.isArray)
+            if(!data || !toolbox.utils.isArray(data)){
+                throw new TypeError('期望传入表格的内容数组，实际传入'+data+",请使用正确的参数!");
                 return this;
+            }
+
             //渲染DOM
-            var table = tableTemp;
-            table.innerHTML = "";
-            var tbody = makeBody(data.data,optionsTemp);
-            if(tableHead)
-                table.appendChild(tableHead);
+            var table,child=[];
+            var options = this.options || null;
+            var tbody = makeBody(data,options);
+            if(this.thead)
+                child.push(this.thead);
             if(tbody)
-                table.appendChild(tbody.render());
-            if(callbackTemp)
-                bindCallBack(table,callbackTemp);
+                child.push(tbody);
+            table = toolbox.element('table',{},child).render();
+            if(this.callback)
+                bindCallBack(table,this.callback);
+            this.parent.innerHTML = "";
+            this.parent.appendChild(table);
             return this;
         }
     };

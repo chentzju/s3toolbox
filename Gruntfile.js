@@ -9,8 +9,10 @@ module.exports = function(grunt) {
         'src/forms.js',
         'src/calculator.js',
         'src/eventManager.js',
+        'src/element.js',
         'src/menu.js',
         'src/page.js',
+        'src/table.js',
         'src/template.js',
         'src/utils.js',
         'src/json.js'

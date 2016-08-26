@@ -72,18 +72,19 @@
             event.preventDefault();
         else
             event.returnValue = false;
-    }
+    };
 
     /**
      * 初始化事件绑定,通过检测元素的属性来完成绑定事件
      */
-    var init = function(){
+    var init = function(selector){
         var evt,target,f;
 
         //正则表达式，匹配函数
-        var pattern = /[a-zA-Z0-9-_]\([a-zA-Z0-9-_]*\)$/
+        var pattern = /[a-zA-Z0-9-_]\([a-zA-Z0-9-_]*\)$/;
+        selector = typeof selector == 'string'?'#'+selector :"";
         types.forEach(function(item){
-            $("["+item+"]").each(function(){
+            $(selector+" ["+item+"]").each(function(){
                 var fn = $(this).attr(item);
                 $(this).on(item,function(){
                     if(pattern.test(fn))

@@ -77,21 +77,13 @@
          * @return {boolean}
          */
         var isPlainObject = function (obj) {
-            var proto, ctor, o = {};
-            if (!obj || Object.prototype.toString.call(obj) !== "[object Object]") {
-                return false;
+            if(obj && Object.prototype.toString.call(obj) === "[object Object]"&& obj.constructor === Object
+            && !Object.hasOwnProperty.call(obj,"constructor")){
+                var key;
+                for(key in obj){}
+                return key === undefined || Object.hasOwnProperty.call(obj,key);
             }
-            proto = Object.getPrototypeOf(obj);
-
-            if (!proto) {
-                return true;
-            }
-
-            var hasOwn = o.hasOwnProperty;
-            var fn2String = hasOwn.toString;
-
-            ctor = o.hasOwnProperty.call(proto, "constructor") && proto.constructor;
-            return typeof ctor === "function" && fn2String.call(ctor) === fn2String.call(Object)
+            return false;
         };
 
         /**
@@ -213,6 +205,30 @@
         };
 
         /**
+         * 判断IE678浏览器
+         * @returns {boolean}
+         */
+        var isIE678 =function (){
+            if(navigator.userAgent.indexOf("MSIE")>0) {
+                //是否是IE浏览器
+                if(navigator.userAgent.indexOf("MSIE 6.0")>0)
+                {
+                    return true;
+                }
+                if(navigator.userAgent.indexOf("MSIE 7.0")>0)
+                {
+                    return true;
+                }
+                if(navigator.userAgent.indexOf("MSIE 8.0")>0)
+                {
+                    return true;
+                }
+            }
+            else {
+                return false;
+            }
+        };
+        /**
          * 迭代器，用来兼容IE8-的数组迭代
          * @returns {*}
          * @param array
@@ -333,6 +349,7 @@
             isPlainObject: isPlainObject,
             isNull: isNull,
             isUndefined: isUndefined,
+            isIE678:isIE678,
             has: has,
             keys: keys,
             values: values,

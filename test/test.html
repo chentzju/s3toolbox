@@ -106,6 +106,12 @@
 
 <div id ="menu"></div>
 
+<h1>Tables表单</h1>
+<button id="maketable">make table</button>
+<button id="renderdata">render data</button>
+<button id="makehead">make head</button>
+<div id = 'table1'>
+</div>
 </body>
 <script>
     $(function(){
@@ -155,6 +161,62 @@
                 content:["content2","content2","contetn3"]}
         ];
         S3.menu.renderMenu(menu,function(e){console.log("点击了"+e)},"menu");
+
+
+        var data1 = {
+            title: ["content1","content2","contetn3",'title4'],
+
+            data:[
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                },
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                },
+                {
+                    name: {tagName:'a',props:{href:'#'},children:['链接']},
+                    money:'45',
+                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
+                }
+            ]
+        };
+
+        var data2 = [
+            {name:'张三',money:'25'},
+            {name:'张三',money:'35'},
+            {name:'张三',money:'15'}
+        ];
+        var opt = {
+            start:[
+                {
+                    tagName:'input',
+                    props:{type:'checkbox'}
+                }
+            ],
+            end:[
+                {
+                    tagName:'button',
+                    props:{"class":'mybutton'},
+                    children:['点击']
+                },
+                {
+                    tagName:'button',
+                    props:{"class":'mybutton'},
+                    children:['点击']
+                }
+            ]
+        };
+        var table;
+        $('#maketable').on('click',function(){
+            table = S3.table('table1',data1,hello,opt);
+        });
+        $('#renderdata').on('click',function(){
+            table.setData(data2);
+        });
 
         S3.eventManager.init();
     });

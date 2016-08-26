@@ -79,24 +79,73 @@
      * @returns {Element}
      */
     Element.prototype.render = function () {
-        var el = document.createElement(this.tagName)
+        var el = document.createElement(this.tagName);
         var props = this.props;
 
         for (var propName in props) {
-            var propValue = props[propName]
+            var propValue = props[propName];
             setAttr(el, propName, propValue)
         }
 
         toolbox.utils.forEach(this.children, function (child) {
-            var childEl = (child instanceof Element)
-                ? child.render()
-                : document.createTextNode(child)
-            el.appendChild(childEl)
+            // 阿门, 又是IE 8  input element has no appendChild property
+            if(el.tagName.toLowerCase() != 'input') {
+                var childEl = (child instanceof Element)
+                    ? child.render()
+                    : document.createTextNode(child);
+                el.appendChild(childEl)
+            }
         });
         return el
     };
 
+    /**
+     * 制作Element对象
+     * @param tagName
+     * @param props
+     * @param children
+     */
+    function makeElement(tagName,props,children){
+        if(!tagName)
+            return null;
+        var utils = toolbox.utils;
+        var el = toolbox.element;
+
+        if (!utils.isArray(children) && children != null) {
+            children = Array.prototype.slice.call(arguments, 2)
+                .filter(
+                    function(value){
+                        return !!value;
+                    })
+        }
+
+        if (utils.isArray(props)) {
+            children = props;
+            props = {}
+        }
+
+        props = props || {};
+        children = children || [];
+
+        //迭代
+        var childrenElements = children.map(function (item) {
+                if (utils.isPlainObject(item) && item.tagName)
+                    return makeElement(item.tagName, item['props'], item['children']);
+                else
+                    return item;
+            });
+        return el(tagName,props,childrenElements);
+    }
+
+    /**
+     * 
+     * @param tagName
+     * @param props
+     * @param children
+     * @returns {Element}
+     */
     toolbox.element = function(tagName,props,children){
         return new Element(tagName,props,children);
-    }
+    };
+    toolbox.element.makeElement = makeElement
 }(S3);
