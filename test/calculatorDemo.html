@@ -4,22 +4,38 @@
     <meta charset="UTF-8">
     <title>S3.cal使用样例</title>
     <script src ="../js/jquery.min.js"></script>
-    <script src = "../dist/S3ToolBox.js"></script>
+    <script src = "../dist/S3ToolBox.min.js"></script>
 </head>
 <body>
 <div>
 <h1>S3.cal使用样例</h1>
 <p>四则运算</p>
-<p>add:加法add(a,b)   //a+b</p>
+    <p>请<strong>依次</strong>输入数字，运算符，数字</p>
+    <input type="text" class="aa">
+    <input type="text" class="type">
+    <input type="text" class="bb">
+    =
+    <input type="text" class="res">
+    <p>add:加法add(a,b)   //a+b</p>
 <p>    sub: 减法sub(a,b)   //a-b</p>
 <p>   mul: 乘法 mul(a,b)</p>
 <p>    div: 除法  div(a,b)</p>
 
 <p>   金额问题</p>
+
 <p>    addComma: 增加金额的逗号 addComma(a)    //1000--->1,000</p>
-<p>    removeComma: 一处逗号   removeComma(a)   //1,000--->1000</p>
+    <input type="text" class="num"> ===>  <input type="text" class="money">
+
+    <p>    removeComma: 一处逗号   removeComma(a)   //1,000--->1000</p>
+    <input type="text" class="money2"> ===>  <input type="text" class="num2">
 
 <p>    数组运算</p>
+    <p>请<strong>依次</strong>输入数组，运算符，数字或数字</p>
+    <input type="text" class="cc">
+    <input type="text" class="type2">
+    <input type="text" class="dd">
+    =
+    <input type="text" class="res2">
 <p>   arrMul: arrMul(a,b)          //a[0]*b[0]  a[1]*b[1] 返回一个新数组</p>
 <p>   arrAdd: addArr(a,b)</p>
 <p>   arrSub: subArr(a,b)</p>
@@ -28,118 +44,70 @@
 <p>    arrMulNum: arrMulNum(a,n)</p>
 </div>
 <script>
-    $(function(){
-        //json2form
-        var obj = {
-            name1:"张三",
-            name2:"历史",
-            name3:['aaaa','aaac'],
-            name4:'aaab',
-            name5:'bbbb',
-            name6:['bbbb','keke']
-        };
-        var form = document.getElementById('formid');
-        $('#json2form').on("click",function(){
-            S3.form.json2form(form,obj);
+    $(function () {
+
+        $('.bb').blur(function () {
+            var val=$(".type").val(),aa=$('.aa').val(),bb=$('.bb').val(),res;
+            switch (val){
+                case '+':
+                    res=S3.cal.add(aa,bb);
+                    $('.res').val(res);
+                    break;
+                case '-':
+                    res=S3.cal.sub(aa,bb);
+                    $('.res').val(res);
+                    break;
+                case '*':
+                    res=S3.cal.mul(aa,bb);
+                    $('.res').val(res);
+                    break;
+                case '/':
+                    res=S3.cal.div(aa,bb);
+                    $('.res').val(res);
+                    break;
+            }
         });
-        $('#clearForm').on("click",function(){
-            S3.form.clearForm(form);
+        
+        //金额
+        $('.num').blur(function () {
+            var n=$(this).val();
+            $('.money').val(S3.cal.addComma(n))
+        })
+        $('.money2').blur(function () {
+            var n=$(this).val();
+            $('.num2').val(S3.cal.removeComma(n))
+        })
+
+        //数组
+
+        $('.dd').blur(function () {
+            var val=$(".type2").val(),aa=$('.cc').val(),bb=$('.dd').val(),res2;
+//            var cc=[1,2,3],dd=[1,2,3];
+            var cc=aa.split(',');
+            var dd=bb.split(',')
+
+            switch (val){
+                case '+':
+//                       alert(typeof cc)
+//                    alert(typeof dd)
+                    res=S3.cal.arrAdd(cc,dd);
+                        alert(res)
+                    $('.res2').val(res);
+                    break;
+                case '-':
+                    res=S3.cal.arrAdd(cc,dd);
+                    $('.res2').val(res);
+                    break;
+                case '*':
+                    res=S3.cal.arrMul(cc,dd);
+                    $('.res2').val(res);
+                    break;
+
+            }
         });
-        $('#form2jsom').on("click",function(){
-           console.log(S3.form.form2json(form));
-        });
+        
 
-        //template
-        var template = document.getElementById('template');
-        var dataobj = {title:'haha',list:['111',"222","333"]};
-        var compile = S3.template("template",{data:dataobj});
-        document.getElementById('temp').innerHTML =compile;
-
-        var container = document.getElementById("page");
-        var page1 = S3.page(container, function(page){
-                    console.log('正在加载第'+page+'页的数据');
-                }, {
-            currentpage:4,pagecount:20
-        });
-        var container2 = document.getElementById("page2");
-        var page2 = S3.page(container2, function(page){
-            console.log('这是第二个页码的打印数据，正在加载'+page+'页的数据');
-        }, {
-            currentpage:6,pagecount:20
-        });
-
-        var menu = [
-            {title:'title1',
-                content:["content1","content2","contetn3"]},
-            {title:'title2',
-                content:["content2","content2","contetn3"]}
-        ];
-        S3.menu.renderMenu(menu,function(e){console.log("点击了"+e)},"menu");
-
-
-        var data1 = {
-            title: ["content1","content2","contetn3",'title4'],
-
-            data:[
-                {
-                    name: {tagName:'a',props:{href:'#'},children:['链接']},
-                    money:'45',
-                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
-                },
-                {
-                    name: {tagName:'a',props:{href:'#'},children:['链接']},
-                    money:'45',
-                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
-                },
-                {
-                    name: {tagName:'a',props:{href:'#'},children:['链接']},
-                    money:'45',
-                    count:{tagName:'input',props:{type:'text',value:'50',children:[]}}
-                }
-            ]
-        };
-
-        var data2 = [
-            {name:'张三',money:'25'},
-            {name:'张三',money:'35'},
-            {name:'张三',money:'15'}
-        ];
-        var opt = {
-            start:[
-                {
-                    tagName:'input',
-                    props:{type:'checkbox'}
-                }
-            ],
-            end:[
-                {
-                    tagName:'button',
-                    props:{"class":'mybutton'},
-                    children:['点击']
-                },
-                {
-                    tagName:'button',
-                    props:{"class":'mybutton'},
-                    children:['点击']
-                }
-            ]
-        };
-        var table;
-        $('#maketable').on('click',function(){
-            table = S3.table('table1',data1,hello,opt);
-        });
-        $('#renderdata').on('click',function(){
-            table.setData(data2);
-        });
-
-        S3.eventManager.init();
-    });
-    function hello(element){
-        console.log(element);
-        console.log("hello world")
-    }
-    function focus(){
-        console.log("focus")
-    }
-</script></body>
+    })
+</script>
+</body>
 </html>
