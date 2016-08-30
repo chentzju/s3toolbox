@@ -30,15 +30,21 @@
     <input type="text" class="money2"> ===>  <input type="text" class="num2">
 
 <p>    数组运算</p>
-    <p>请<strong>依次</strong>输入数组，运算符，数字或数字</p>
-    <input type="text" class="cc">
+    <p>请<strong>依次</strong>输入数组，运算符，数组</p>
+    <input type="text" class="cc" value="[1,2,3]">
     <input type="text" class="type2">
-    <input type="text" class="dd">
+    <input type="text" class="dd" value="[1,2,3]">
     =
     <input type="text" class="res2">
 <p>   arrMul: arrMul(a,b)          //a[0]*b[0]  a[1]*b[1] 返回一个新数组</p>
 <p>   arrAdd: addArr(a,b)</p>
 <p>   arrSub: subArr(a,b)</p>
+    <p>请<strong>依次</strong>输入数组，运算符，数字</p>
+    <input type="text" class="ee" value="[1,2,3]">
+    <input type="text" class="type3">
+    <input type="text" class="ff">
+    =
+    <input type="text" class="res3">
 <p>   arrAddNum: arrAddNum(a,n)   //a[i]+n  ---b[i]</p>
 <p>   arrSubNum: arrSubNum(a,n)</p>
 <p>    arrMulNum: arrMulNum(a,n)</p>
@@ -80,22 +86,20 @@
 
         //数组
 
-        $('.dd').blur(function () {
-            var val=$(".type2").val(),aa=$('.cc').val(),bb=$('.dd').val(),res2;
-//            var cc=[1,2,3],dd=[1,2,3];
-            var cc=aa.split(',');
-            var dd=bb.split(',')
+        $('.type2').blur(function () {
+            var val=$(".type2").val(),res2;
+            var cc=[1,2,3],dd=[1,2,3];
 
             switch (val){
                 case '+':
-//                       alert(typeof cc)
-//                    alert(typeof dd)
                     res=S3.cal.arrAdd(cc,dd);
-                        alert(res)
                     $('.res2').val(res);
                     break;
                 case '-':
-                    res=S3.cal.arrAdd(cc,dd);
+//                  alert(1)
+                    //减法不对
+                    res=S3.cal.arrSub(cc,dd);
+                    alert(res);
                     $('.res2').val(res);
                     break;
                 case '*':
@@ -105,7 +109,27 @@
 
             }
         });
-        
+
+        $('.ff').blur(function () {
+            var val=$(".type3").val(),ff=parseInt($('.ff').val()),res3;
+            var cc=[1,2,3];
+
+            switch (val){
+                case '+':
+                    res=S3.cal.arrAddNum(cc,ff);
+                    $('.res3').val(res);
+                    break;
+                case '-':
+                    res=S3.cal.arrSubNum(cc,ff);
+                    $('.res3').val(res);
+                    break;
+                case '*':
+                    res=S3.cal.arrMulNum(cc,ff);
+                    $('.res3').val(res);
+                    break;
+
+            }
+        });
 
     })
 </script>
