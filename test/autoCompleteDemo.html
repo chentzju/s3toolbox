@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>autoComplete</title>
+    <meta charset="UTF-8">
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
+    <style type="text/css">
+        #inputText{
+            position:absolute;
+            top:200px;
+            left:150px;
+        }
+
+        #inputText2{
+            position:absolute;
+            top:400px;
+            left:450px;
+        }
+    </style>
+</head>
+<body>
+
+
+<h1>autocomplete DEMO</h1>
+<p>这是一个autocomplete用法的例子，请根据需求调用autocomplete，options参数暂时为空，可以不调用。</p>
+<p>对于任何一个input元素，调用的方式为S3.autocomplete(inputElement,callback)，其中inputElement是该元素，而callback
+为每次输入某个字符后的返回，可能为空;第三个参数可以使一个对象，里面包含自定义参数，目前暂时只接受width参数，即显示的
+    选择框的宽度，后续根据需求逐渐增加功能。如果对宽度没有要求，可以不设。具体调用方式请看本页源代码.
+</p>
+
+<input id="inputText" type="text">
+<input id="inputText2" type="text">
+
+<script>
+    var sayhello = function (e){
+        return ["a",'b','c','d','e','f','g']
+    };
+    var sayyes = function (e){
+        return ["1",'3','4','5','6','2','4']
+    };
+
+
+    S3.autocomplete('inputText',sayhello,{});
+    S3.autocomplete('inputText2',sayyes);
+</script>
+</body>
+</html>

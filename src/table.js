@@ -19,7 +19,7 @@
 
         //处理start  end不处理
         var startCol,startChild = [];
-        if(options &&　options.start && utils.isArray(options.start)){
+        if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
                 startChild.push(el.makeElement(item.tagName,item.props,item.children));
@@ -64,7 +64,7 @@
 
         //处理start
         var startCol,startChild = [];
-        if(options &&　options.start && utils.isArray(options.start)){
+        if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
                 startChild.push(el.makeElement(item.tagName,item.props,item.children));
@@ -75,7 +75,7 @@
 
         //处理end
         var endCol,endChild = [];
-        if(options &&　options.end && utils.isArray(options.end)){
+        if(options && options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
                 endChild.push(el.makeElement(item.tagName,item.props,item.children));

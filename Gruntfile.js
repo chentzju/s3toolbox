@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     var sources = [
         'src/S3ToolBox.js',
         'src/ajax.js',
+        'src/autocomplete.js',
         'src/forms.js',
         'src/calculator.js',
         'src/eventManager.js',

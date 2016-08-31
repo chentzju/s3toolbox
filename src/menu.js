@@ -110,7 +110,7 @@
      */
     var renderMenu = function(array,callback,container){
         setCss && setCss();
-        if(toolbox.utils.isArray(array) &&　container != null){
+        if(toolbox.utils.isArray(array) && container != null){
             if(typeof container === "string")
                 container = document.getElementById(container);
             container.appendChild(makeMenu(array,callback));
