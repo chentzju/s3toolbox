@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S3.element用法样例</title>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.min.js"></script>
+</head>
+<body>
+<h1>S3.element用法样例</h1>
+<button id="Ele">基本转换，只转化一次</button>
+<button id="makeEle">深度转换</button>
+
+
+<script>
+    $(function(){
+
+        var el = S3.element;
+        var ul = el('ul',{id:'list'},[
+            el('li',{class:'item'},['这里写想要生成的元素的内容 1']),
+            el('li',{class:'item'},['这里写想要生成的元素的内容 2'])
+        ]);
+        var html = ul.render();
+
+
+
+
+        var ul2 = el.makeElement('ul',{id:'list'},[
+            {tagName:'li',props:{class:'item'},children:['深度转换 1']},
+            {tagName:'li',props:{class:'item'},children:['深度转换 2']},
+        ]);
+        var html2 = ul2.render();
+
+
+        $('#Ele').click(function () {
+            document.body.appendChild(html);
+        });
+
+        $('#makeEle').click(function () {
+            document.body.appendChild(html2);
+        })
+    })
+
+</script>
+</body>
+</html>

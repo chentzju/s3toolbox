@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>S3.forms用法样例</title>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.min.js"></script>
+</head>
+<body>
+<h1>S3.forms用法样例</h1>
+
+<button id="form2json">formTojson</button>
+<button id="json2form">jsonToform</button>
+<button id="clear">清空表单</button>
+
+<form id = "myform">
+    大名：<input type = "text" name="name1" >
+    小名：<input type = "text" name ="name2">
+
+    性别：<input name = "name4" type = "radio" value ="aaaa">男
+         <input name = "name4" type ="radio" value = "aaab">女
+
+    爱好：<input name = "name3" type = "checkbox" value ="aaaa">吃饭
+         <input name = "name3" type ="checkbox" value ="aaab">睡觉
+         <input name = "name3" type ="checkbox" value ="aaac">看电视
+
+    <select name = "name5">
+        <option value="aaaa">
+            233
+        </option>
+        <option value ="bbbb">
+            244
+        </option>
+        <option value ="cccc">
+            255
+        </option>
+    </select>
+    <select name = "name6" multiple>
+        <option value="aaaa">
+            2333
+        </option>
+        <option value ="bbbb">
+            2444
+        </option>
+        <option value ="cccc">
+            2555
+        </option>
+    </select>
+</form>
+
+<script>
+    $(function () {
+        var form = document.getElementById('myform');
+        var obj = {
+            name1:"张三",
+            name2:"狗娃子",
+            name3:['aaaa','aaac'],
+            name4:'aaab',
+            name5:'bbbb',
+        };
+
+        $('#form2json').on('click',function(){
+            console.log(S3.form.form2json(form));   //表单导出json
+        });
+
+        $('#json2form').on('click',function(){
+            S3.form.json2form(form,obj);        //json导入表单
+        });
+        $('#clear').on('click',function(){
+            S3.form.clearForm(form);                //清空表单
+        });
+
+    })
+</script>
+</body>
+</html>
