@@ -109,6 +109,49 @@ var onError = function(e){
 S3.execjava(id,param,appid,success,onError);
 ```
 
+## 自动补全autocomplete
+autocomplete的功能是对指定的输入框input元素绑定autocomplete功能，每次当该输入框中输入内容后，会调用绑定的数据读取函数
+callback，并将输入框的内容作为输入参数，callback返回的后台数据，将作为搜索结果展示在列表中，并供用户选择。
+
+autocomplete功能封装在S3.autocomplete对象中，并对外提供一个autocomplete接口。
+
+```javascript
+    /**
+     * autocomplete函数，实现某个输入框的自动补全，只要设置相应的参数即可
+     * @param inputElement     需要实现自动补全的input元素
+     * @param callback      回调函数，必须返回一个数组
+     * @param options       参数设定，暂时只有选择框宽度一个选项  options = {width:'300px'}
+     * @returns {boolean}
+     */
+    S3.autocomplete(element,callback,options);
+```
+
+使用方法：
+
+对于页面中的input元素
+```
+<input id="inputText" type="text">
+```
+
+可以这样绑定autocomplete
+
+```javascript
+    var input = document.getElementById('inputText');
+    var callback = function(inputvalue){
+         switch(inputvalue){
+            case "a":
+                return [1,2,3,4,5,6,7];
+                break;
+            default:
+                return ["a","b","c","d"];
+                break;
+         }
+    }
+
+    //绑定autocomplete
+    S3.autocomplete(input,callback,{})
+```
+
 ## 计算器
 计算器提供了多种计算的通用方法，考虑到javascript使用浮点运算进行计算的精度问题，会出现0.1+0.2 = 0.30000000000000004
 的极端问题，计算器接口屏蔽了这些影响，在除除法以外的计算中都确保计算精度，同时除法也确保相对精确。
@@ -572,6 +615,67 @@ var template = document.getElementById('template');
 var dataobj = {title:'haha',list:['111',"222","333"]};
 var html = S3.template("template",{data:dataobj}); //模板id和数据对象
 document.getElementById('temp').innerHTML =html;
+```
+
+## 表单验证工具
+表单验证工具的作用是根据HTML标签中设定的规则，对表单内的输入进行验证，如果出错则返回错误信息，如果正确则允许调用预先设定的函数。
+表单验证工具封装在S3.validate属性中，对外只有一个S3.validate接口，通过调用该接口来设置表单验证。
+
+#### 可以验证的类型
+
+1.input type
+
+input标签的type可验证的目前有3种，分别为：email,number,mobilephone，后续可是需求添加。写法为：
+```javascript
+<input type = "number" >   //必须是数字 可以是小数
+<input type = "email" >     //必须是邮箱
+<input type = "mobilephone" >   //必须是手机
+```
+2.特殊标签属性
+
+在input标签内设置的特殊标签属性也可以起到表单验证的作用，分别有
+
+       minlength = "x"  : 设定最小输入字符数   错误提示：至少填写 x 个字符
+       maxlength = "x"  : 设定最大输入的字符数  错误提示：最多填写 x 个字符
+       max = "x"  : 最大的输入数字，支持小数      错误提示： 请填写小于等于 x 的数值
+       min = "x"   : 最小的输入数字，支持小数     错误提示：请填写大于等于x的数值
+       required    : 非空                          错误提示：必须填写该字段
+       pattern = "正则表达式" : 根据正则表达式匹配输入   错误提示：请按照要求的格式填写
+
+#### 接口
+```javascript
+    /**
+     * 验证函数对象
+     * @param form  表单对象 也可以是div
+     * @param options  可选配置，一般只需要配置前两个即可
+     *
+     * example:
+     *  options = {
+     *       onsuccess:function(){},  //验证通过后的回调函数
+     *       submitButton:button,   //如果form不是表单，button不会自动提交，因此需要指定这个被点击后触发校验的按钮
+     *       patterns:{} //如果对当前的type='number'或者mobilephone或者email不满意，可以自己写pattern 一般用不到
+     *       markValid:function(validity){}    //如果对目前的校验成功的效果不满意，可以重新定义
+     *       markInValid:function(validity){}  //如果对目前的校验失败变红不满意，可以重新定义
+     */
+    S3.validate(form,options)
+```
+### 调用样例
+```javascript
+    var form = document.getElementById("validetetest");
+    var button = form.getElementById('button');
+    S3.validate(form,{
+            onsuccess:function(){
+                submitToJava();
+            },
+            submitButton:button
+    });
+
+    function submitToJava(){
+        //S3.execjava(bean,param,callback(){
+        //  do something
+        //
+        // },true)
+    }
 ```
 
 ## 通用方法

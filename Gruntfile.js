@@ -16,6 +16,7 @@ module.exports = function(grunt) {
         'src/table.js',
         'src/template.js',
         'src/utils.js',
+        'src/validate.js',
         'src/json.js'
     ];
     

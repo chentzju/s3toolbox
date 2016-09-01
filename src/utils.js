@@ -18,7 +18,7 @@
                 return newobj;
             }
             if(isObject(obj)){
-                for(key in obj){
+                for(var key in obj){
                     if(isObject(obj[key]))
                         newobj[key] = deepCopy(obj[key]);
                     else

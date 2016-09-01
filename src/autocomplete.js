@@ -14,40 +14,6 @@
 
     };
 
-    var CSS = ".autocomplete-container{\r\n" +
-        "            border:solid 1px black;\r\n" +
-        "            width:180px;\r\n" +
-        "            height:200px;\r\n" +
-        "            overflow-y:auto;\r\n" +
-        "        }\r\n" +
-        "        .autocomplete-container ul{\r\n" +
-        "            margin:0;\r\n" +
-        "            padding:0;\r\n" +
-        "        }\r\n" +
-        "        .autocomplete-container li{\r\n" +
-        "            display:block;\r\n" +
-        "            height:30px;\r\n" +
-        "            padding-top:10px;\r\n" +
-        "            padding-left:10px;\r\n" +
-        "            border-bottom:dashed 1px ;\r\n" +
-        "        }\r\n" +
-        "        .autocomplete-container li.active{\r\n" +
-        "            background: #8bcbff;\r\n" +
-        "        }";
-    var setCss = function(){
-        var style = document.createElement('style');
-        style.type = "text/css";
-        try{
-            style.innerHTML = CSS;
-        }catch(e){
-            style.styleSheet.cssText = CSS;
-        }
-        var head = document.getElementsByTagName('head')[0];
-        head.appendChild(style);
-        setCss = null;
-    };
-
-
     /**
      * 单独一份拷贝 SELECTOR控件 返回一个SELECTOR对象实例，用来处理autoComplete的选择功能，
      * 每次调用autocomplete都会生成一个SELECTOR实例，所以autocomplete可以各自使用互不影响
@@ -68,7 +34,6 @@
          * @returns {Selector}
          */
         init : function (inputElement,options){
-            setCss && setCss();
             var that = this;
             var container = toolbox.element('div',
                     {
@@ -188,7 +153,6 @@
      * @param callback      回调函数，必须返回一个数组
      * @param options
      * @returns {boolean}
-     * @constructor
      */
     var autoComplete = function(inputElement,callback,options){
         if(!inputElement || typeof callback != 'function')
@@ -207,12 +171,14 @@
         options.left = options.left || left;
         options.top = options.top || top;
         //齐宽
-        options.width || (options.width = inputElement.offsetWidth);
+        if(options.width)
+            options.width = parseInt(options.width);
+        else
+            options.width = inputElement.offsetWidth;
 
         //获取一个新的selector对象
         var selector = Selector(inputElement,options);
-
-
+        
         //对输入框绑定方法
         if(typeof callback == 'function'){
             var em = toolbox.eventManager;
@@ -255,8 +221,6 @@
             });
         }
     };
-
-
 
     S3.autocomplete = autoComplete;
 }(S3);

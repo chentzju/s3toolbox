@@ -5,6 +5,28 @@
     <title>Title</title>
     <script src ="../js/jquery.min.js"></script>
     <script src = "../dist/S3ToolBox.js"></script>
+    <style type="text/css">
+        .autocomplete-container{
+            border:solid 1px black;
+            width:180px;
+            height:200px;
+            overflow-y:auto;
+        }
+        .autocomplete-container ul{
+            margin:0;
+            padding:0;
+        }
+        .autocomplete-container li{
+            display:block;
+            height:30px;
+            padding-top:10px;
+            padding-left:10px;
+            border-bottom:dashed 1px ;
+        }
+        .autocomplete-container li.active{
+            background: #8bcbff;
+        }
+    </style>
 </head>
 <body>
 
@@ -112,6 +134,7 @@
 <button id="makehead">make head</button>
 <div id = 'table1'>
 </div>
+
 <script>
     $(function(){
         //json2form

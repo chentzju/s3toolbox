@@ -2,59 +2,12 @@
  * Created by zjfh-chent on 2016/8/16.
  */
 +function(toolbox){
-
-    //默认的CSS样式表
-    var css = "ul.menu-list {" +
-        "    display: block;" +
-        "    padding: 0;" +
-        "    margin: 0;" +
-        "    text-align: center;" +
-        "}" +
-        "ul.menu-list li {" +
-        "    display: inherit;" +
-        "    background: silver;" +
-        "    cursor: pointer;" +
-        "}" +
-        "ul.menu-list .menu-title {" +
-        "    background: #009697;" +
-        "    height: 1.6rem;" +
-        "    vertical-align: middle;" +
-        "    padding: 5px;" +
-        "    margin: 0;" +
-        "}" +
-        "" +
-        "ul.menu-content {" +
-        "    padding: 0;" +
-        "}" +
-        "ul.menu-content li {" +
-        "    height: 1.5rem;" +
-        "    background: #D1D1D1;" +
-        "    border-bottom: solid 1px silver;" +
-        "}";
-
-    /**
-     * 只执行一次
-     */
-    var setCss = function(){
-        var style = document.createElement('style');
-        style.type = "text/css";
-        try{
-            style.innerHTML = css;
-        }catch(e){
-            style.styleSheet.cssText = css;
-        }
-        var head = document.getElementsByTagName('head')[0];
-        head.appendChild(style);
-        setCss = null;
-    };
-
     /**
      * 生成菜单，返回一个菜单HTML对象
      * @param array
      * @param callback
      */
     var makeMenu = function(array,callback){
-        setCss && setCss();
         if(!toolbox.utils.isArray(array))
             return null;
         var menuNode = document.createElement("ul");
@@ -109,7 +62,6 @@
      * @param container
      */
     var renderMenu = function(array,callback,container){
-        setCss && setCss();
         if(toolbox.utils.isArray(array) && container != null){
             if(typeof container === "string")
                 container = document.getElementById(container);
@@ -117,14 +69,8 @@
         }
     };
 
-    var cssOff = function(){
-        setCss = null;
-    };
-
-
     S3.menu = {
         makeMenu:makeMenu,
         renderMenu:renderMenu,
-        cssOff:cssOff
     }
 }(S3);

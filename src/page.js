@@ -122,53 +122,11 @@
             return pageNode;
         }
 
-        var css = " ul.pages {" +
-            "display:block;" +
-            "border:none;" +
-            "text-transform:uppercase;" +
-            "font-size:12px;" +
-            "margin:10px 0 10px;" +
-            "padding:0;" +
-            "}" +
-            " ul.pages li {" +
-            "cursor:pointer;" +
-            "list-style:none;" +
-            "float:left;" +
-            "border:1px solid #ccc;" +
-            "text-decoration:none;" +
-            "margin:0 5px 0 0;" +
-            "padding:5px;" +
-            "}" +
-            " ul.pages li:hover {" +
-            "cursor:pointer;" +
-            "border:1px solid #003f7e;" +
-            "}" +
-            " ul.pages li.pgEmpty {" +
-            "border:1px solid #eee;" +
-            "color:#eee;" +
-            "}" +
-            " ul.pages li.pgCurrent {" +
-            "cursor:pointer;" +
-            "border:1px solid #003f7e;" +
-            "color:#000;" +
-            "font-weight:700;" +
-            "background-color:#e8f0f8;" +
-            "}";
+
         //page plugin start
         var options = {
             currentpage: 1,
-            pagecount: 10,
-            setCSS:function(){
-                var style = document.createElement('style');
-                style.type = "text/css";
-                try{
-                    style.innerHTML = css;
-                }catch(e){
-                    style.styleSheet.cssText = css;
-                }
-                var head = document.getElementsByTagName('head')[0];
-                head.appendChild(style);
-            }
+            pagecount: 10
         };
         var callbackfunc = function(clickpage){
             return clickpage;
@@ -197,10 +155,6 @@
         Page.prototype = {
             constructor:Page,
             init:function(container,callback,options){
-                if(options.setCSS){
-                    options.setCSS();
-                    options.setCSS = null;
-                }
                 this.container = container;
                 renderPage(parseInt(options.currentpage), parseInt(options.pagecount), callback,container);
                 return this;

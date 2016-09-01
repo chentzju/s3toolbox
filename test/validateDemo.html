@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset ="UTF-8">
+    <title>validateDemo</title>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
+</head>
+
+<style>
+    body{
+        font-family: 'Microsoft YaHei';
+        font-size:16px;
+    }
+    label{
+        display: inline-block;
+        padding: 0 10px;
+        text-align: right;
+        width:100px;
+    }
+    input{
+        outline:none;
+        padding:10px;
+        width:200px;
+    }
+    div{
+        margin:12px;
+    }
+    button{
+        width:80px;
+        height:50px;
+        padding:10px;
+        background:#0b97c4;
+        border:none;
+    }
+    button:hover{
+        background: #1e7dc4;
+    }
+</style>
+<body>
+
+<h1>validate DEMO</h1>
+表单验证工具的作用是根据HTML标签中设定的规则，对表单内的输入进行验证，如果出错则返回错误信息，如果正确则允许调用预先设定的函数。 表单验证工具封装在S3.validate属性中，对外只有一个S3.validate接口，通过调用该接口来设置表单验证。
+<div id ="validetetest" novalidate="novalidate" style="width:500px">
+    <fieldset>
+        <legend><h3>表单框</h3></legend>
+            <div>
+                 <label>用  户  名:(*)</label>
+                 <input type="text" required  maxlength="10" minlength="3" placeholder="输入用户名">
+                <label>*</label>
+            </div>
+            <div>
+                <label>密      码:</label>
+                <input type="password" name = "password" id="xxxx"  minlength = "6" placeholder="输入密码" required>
+                <label>*</label>
+            </div>
+            <div>
+                <label>确认  密码:</label>
+                <input type="password" name="password" equalTo="#xxxx" type="text" placeholder="再次输入密码" required>
+                <label>*</label>
+            </div>
+            <div>
+                 <label>邮      箱:</label>
+                <input type="email" required placeholder="输入邮箱">
+            </div>
+            <div>
+                <label>手   机   号:</label>
+                <input type="mobilephone" required minlength="11" maxlength="11" placeholder="输入手机号">
+                <label>*</label>
+            </div>
+            <div>
+                <label>经销商编号:</label>
+                <input type="text" required maxlength="15">
+                <label>*</label>
+            </div>
+            <div>
+                <label>      数据:</label>
+                <input type="number" min="0.1" max="10000000">
+            </div>
+            <div>
+                <input type="text" required pattern="^\d+$" placeholder="输入手机号" style = "display:none">
+            </div>
+            <div>
+                <label>禁用的不校验</label>
+                <input type = "text" disabled>
+            </div>
+            <div>
+                <label>备注</label>
+                <textarea maxlength="200" width="200px"></textarea>
+            </div>
+            <div>
+                <button >提交</button>
+            </div>
+        </fieldset>
+</div>
+
+<script>
+    $(function(){
+        var form = document.getElementById("validetetest");
+        var button = form.getElementsByTagName('button')[0];
+        S3.validate(form,{
+            onsuccess:function(){
+                checkback();
+            },
+            submitButton:button
+        });
+
+        function checkback(){
+            //S3.execjava(bean,param,callback(){
+            //  do something
+            //
+            // },true)
+            console.log("success!")
+        }
+    });
+</script>
+</body>
+</html>
