@@ -9,8 +9,8 @@
 <body>
 <h1>S3.forms用法样例</h1>
 
-<button id="form2json">formTojson</button>
 <button id="json2form">jsonToform</button>
+<button id="form2json">formTojson</button>
 <button id="clear">清空表单</button>
 
 <form id = "myform">
@@ -60,6 +60,7 @@
         };
 
         $('#form2json').on('click',function(){
+            alert("请查看console");
             console.log(S3.form.form2json(form));   //表单导出json
         });
 

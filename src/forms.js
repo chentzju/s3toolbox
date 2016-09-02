@@ -34,8 +34,9 @@
 
 
         /**
-         * 将json数据填入form中。
-         * @param form,jsonObj,pre
+         * 将数据导入表单
+         * @param form
+         * @param jsonObj
          */
         var json2form = function(form,jsonObj,pre){
             var key,value,name,eles,match;

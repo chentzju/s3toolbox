@@ -9,7 +9,7 @@ var S3 = (function ($) {
     }
 
     var S3 = function(){};
-    S3.VERSION = "1.0";
+    var VERSION = "1.0";
 
     var autocompleteCSS = ".autocomplete-container{" +
         "            border:solid 1px black;" +
@@ -31,33 +31,38 @@ var S3 = (function ($) {
         "        .autocomplete-container li.active{" +
         "            background: #8bcbff;" +
         "        }";
-    var menuCSS = "ul.menu-list {" +
-        "    display: block;" +
-        "    padding: 0;" +
-        "    margin: 0;" +
-        "    text-align: center;" +
-        "}" +
-        "ul.menu-list li {" +
-        "    display: inherit;" +
-        "    background: silver;" +
-        "    cursor: pointer;" +
-        "}" +
-        "ul.menu-list .menu-title {" +
-        "    background: #009697;" +
-        "    height: 1.6rem;" +
-        "    vertical-align: middle;" +
-        "    padding: 5px;" +
-        "    margin: 0;" +
-        "}" +
-        "" +
-        "ul.menu-content {" +
-        "    padding: 0;" +
-        "}" +
-        "ul.menu-content li {" +
-        "    height: 1.5rem;" +
-        "    background: #D1D1D1;" +
-        "    border-bottom: solid 1px silver;" +
-        "}";
+    var menuCSS = "ul.menu-list-level0{" +
+        "        display: block;" +
+        "        padding: 0;" +
+        "        margin: 0;" +
+        "        text-align: center;" +
+        "        border:solid #b7bcc0 1px;" +
+        "    }" +
+        "    ul.menu-list-level1{" +
+        "        display: inherit;" +
+        "        padding: 0;" +
+        "        margin: 0;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    div.menu-title-level0{" +
+        "        background-color: #2EC1E2;" +
+        "        padding:10px;" +
+        "        text-align:center;"    +
+        "    }" +
+        "    div.menu-title-level1{" +
+        "        background-color: #79DEEE;" +
+        "        padding:10px;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    li.menu-content-level1{" +
+        "        padding:8px;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    li.menu-content-level1:hover{" +
+        "        background: #dadada;" +
+        "        padding:10px;" +
+        "        cursor:pointer;" +
+        "    }";
     var pageCSS = " ul.pages {" +
         "display:block;" +
         "border:none;" +
@@ -136,5 +141,6 @@ var S3 = (function ($) {
     setCSS();
     
     S3.cssOff = cssOFF;
+    S3.version = function(){return Version;};
     return S3;
 })(jQuery);

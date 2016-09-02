@@ -13,7 +13,8 @@
 <button  click = "clickfunction">点击调用clickfunction</button>
 
 <h3>手动绑定和解除事件</h3>
-<button id="myele">点一下试试</button>
+<button id="bind">点一下试试</button>
+<button id ="remove">点击移除</button>
 
 <h3>事件对象</h3>
 <button id="ev">获取当前事件及事件对象</button>
@@ -23,32 +24,41 @@
 <script>
     //自动绑定事件
     var helloworld = function(){
-        console.log("hello world");
+        alert("focus");
     };
     var clickfunction = function(){
-        console.log("点击了button");
+        alert("点击了button");
     };
     S3.eventManager.init();
 
 
+
+
     $(function () {
+
         //手动绑定和解除事件
-        var element = document.getElementById("myele");
-        var handler = function(){
+        var bind = document.getElementById("bind");
+        var remove = document.getElementById("remove");
+        var bindEvent = function(){
             alert('已绑定事件')
         };
-        S3.eventManager.addHandler(element,"click",handler);
-        S3.eventManager.removeHandler(element,"click",handler);
-        //事件对象
+        var removeEvent = function(){
+            S3.eventManager.removeHandler(bind,"click",bindEvent);
+            alert("再点击前面的绑定试试");
+        };
+        S3.eventManager.addHandler(bind,"click",bindEvent);
+        S3.eventManager.addHandler(remove,'click',removeEvent);
+
+
+        //事件对象处理
         var div = document.getElementById("ev");
         var em = S3.eventManager;
         em.addHandler(div,"click",function(){
             var evt = em.getEvent();          //获取事件
-            console.log('当前事件：'+evt);
             var target = em.getTarget(evt);   //获取触发事件的对象
-            console.log('当前事件对象：'+target);
-            em.stopPropagation(evt);            //禁止事件冒泡
-            em.preventDefault(evt);             //禁止默认事件
+            console.log(evt);
+            console.log(target);
+            alert('请查看console');
         });
 
     })

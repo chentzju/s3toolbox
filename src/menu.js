@@ -2,75 +2,101 @@
  * Created by zjfh-chent on 2016/8/16.
  */
 +function(toolbox){
+
     /**
-     * 生成菜单，返回一个菜单HTML对象
-     * @param array
-     * @param callback
+     * 生成菜单，返回一个菜单Element对象
+     * @param list  菜单数据
+     * @param i 层级
      */
-    var makeMenu = function(array,callback){
-        if(!toolbox.utils.isArray(array))
-            return null;
-        var menuNode = document.createElement("ul");
-        menuNode.setAttribute('class','menu-list');
-        var content,title,child,body;
-        array.forEach(function(list){
-            content = document.createElement('li');
-            if(list['title']) {
-                title = document.createElement('div');
-                title.setAttribute('class','menu-title');
-                title.innerHTML = list.title;
-                content.appendChild(title);
+    var generatorMenu = function(list,i){
+        var i = i || 0;
+        var obj ={
+            tagName:'ul',
+            props:{'class':'menu-list-level'+i},
+            children:[]
+        };
+        if(!list && !toolbox.utils.isArray(list)){
+            list = [];
+        }
+        list.forEach(function(li){
+            var liobj = {
+                tagName:'li',
+                props:{'class':'menu-content-level'+ i},
+                children:[]
+            };
+            if(toolbox.utils.isPlainObject(li)){
+                if(li['title']){}
+                    liobj.children.push({
+                       tagName:'div',
+                       props:{'class':'menu-title-level'+ (i+1)},
+                       children:[li['title']]
+                    });
+                if(li['content'] && toolbox.utils.isArray(li['content'])){
+                    liobj.children.push(generatorMenu(li['content'],i+1));
+                }
             }
-            body = document.createElement('ul');
-            body.setAttribute('class','menu-content');
-            if(list.content && toolbox.utils.isArray(list.content)){
-                list.content.forEach(function(item){
-                    child = document.createElement('li');
-                    child.innerHTML = item;
-                    body.appendChild(child);
-                })
-            }else{
-                child = document.createElement('li');
-                child.innerHTML = list.content;
-                body.appendChild(child);
+            else{
+                    liobj.children.push(li)
             }
-            content.appendChild(body);
-            menuNode.appendChild(content);
+            obj.children.push(liobj);
         });
 
-        toolbox.eventManager.addHandler(menuNode,'click',function(){
-            var evt = toolbox.eventManager.getEvent(event);
-            var target = toolbox.eventManager.getTarget(evt);
-
-            if(target.getAttribute('class') && target.getAttribute('class').indexOf('menu-title') != -1){
-                //如果是标题
-                $(target).next().slideToggle();
-            }else{
-                //如果是内容
-                callback(target);
-            }
-
-        },false);
-        return menuNode;
+        return toolbox.element.makeElement(obj);
     };
 
 
-    /**
-     * 渲染菜单
-     * @param array
-     * @param callback
-     * @param container
-     */
-    var renderMenu = function(array,callback,container){
-        if(toolbox.utils.isArray(array) && container != null){
-            if(typeof container === "string")
-                container = document.getElementById(container);
-            container.appendChild(makeMenu(array,callback));
+
+    var options = {
+        onclick:function(target){
+            if($(target).attr("class").indexOf('title-level') != -1)
+                $(target).parent().find('ul').slideToggle();
+            options.callback(target);
+        },
+        callback:function(){
+
         }
     };
 
+    /**
+     * 渲染菜单
+     * @param container
+     * @param list
+     * @param callback
+     */
+    var renderMenu = function(container,list,callback){
+        container.appendChild(makeMenu(list,callback));
+    };
+    /**
+     * 生成菜单
+     * @param obj
+     * @param callback
+     * @returns {String|Element|*}
+     */
+    var makeMenu = function(obj,callback){
+        var container = document.createElement('div');
+        if(toolbox.utils.isPlainObject(obj)){
+            if(obj['title']){
+                var title = toolbox.element('div',{'class':'menu-title-level0'},[obj['title']]).render();
+                container.appendChild(title)
+            }
+            if(toolbox.utils.isArray(obj.content)){
+                var menu = generatorMenu(obj.content).render();
+                if(typeof callback == 'function')
+                    options.callback = callback;
+                toolbox.eventManager.addHandler(menu,'click',function(){
+                    var evt = toolbox.eventManager.getEvent();
+                    var target = toolbox.eventManager.getTarget(evt);
+                    options.onclick(target);
+                });
+                container.appendChild(menu);
+            }
+        }
+        return container;
+    };
+
+
     S3.menu = {
         makeMenu:makeMenu,
-        renderMenu:renderMenu,
+        renderMenu:renderMenu
     }
 }(S3);

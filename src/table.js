@@ -67,7 +67,7 @@
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item.tagName,item.props,item.children));
+                startChild.push(el.makeElement(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -78,7 +78,7 @@
         if(options && options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
-                endChild.push(el.makeElement(item.tagName,item.props,item.children));
+                endChild.push(el.makeElement(item));
             });
         }
         endCol = el('td',null,endChild);
@@ -90,7 +90,9 @@
             if(startCol){
                 rowchild.push(startCol);
             }
-            for(var key in rowdata) rowchild.push(el.makeElement('td', {name: key}, [rowdata[key]]));
+            for(var key in rowdata) rowchild.push(el.makeElement(
+                {tagName:'td', props:{name: key}, children:[rowdata[key]]
+                }));
             if(endCol) {
                 rowchild.push(endCol);
             }

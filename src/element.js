@@ -101,40 +101,39 @@
 
     /**
      * 制作Element对象
-     * @param tagName
-     * @param props
-     * @param children
+     * @param obj
+     * @return {Element}
      */
-    function makeElement(tagName,props,children){
-        if(!tagName)
-            return null;
+    function makeElement(obj){
         var utils = toolbox.utils;
         var el = toolbox.element;
+        if(!utils.isPlainObject(obj) || !obj['tagName'])
+            return null;
 
-        if (!utils.isArray(children) && children != null) {
-            children = Array.prototype.slice.call(arguments, 2)
+        if (!utils.isArray( obj['children'] ) &&  obj['children']  != null) {
+            obj.children = Array.prototype.slice.call(arguments, 2)
                 .filter(
                     function(value){
                         return !!value;
                     })
         }
 
-        if (utils.isArray(props)) {
-            children = props;
-            props = {}
+        if (utils.isArray(obj['props'])) {
+            obj.children = props;
+            obj.props = {}
         }
 
-        props = props || {};
-        children = children || [];
+        obj.props = obj.props || {};
+        obj.children = obj.children || [];
 
         //迭代
-        var childrenElements = children.map(function (item) {
+        var childrenElements = obj.children.map(function (item) {
                 if (utils.isPlainObject(item) && item.tagName)
-                    return makeElement(item.tagName, item['props'], item['children']);
+                    return makeElement(item);
                 else
                     return item;
             });
-        return el(tagName,props,childrenElements);
+        return el(obj.tagName,obj.props,childrenElements);
     }
 
     /**

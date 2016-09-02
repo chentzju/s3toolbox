@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>S3.menu用法样例</title>
     <script src ="../js/jquery.min.js"></script>
-    <script src = "../dist/S3ToolBox.min.js"></script>
+    <script src = "../dist/s3toolbox.js"></script>
 </head>
 <body>
 <h1>S3.menu用法样例</h1>
@@ -16,14 +16,30 @@
 
 <script>
 
-    var menu = [
-        {title:'title1', content:["content1","content2","contetn3"]},
-        {title:'title2', content:["content2","content2","contetn3"]},
-    ];
+    var menu = {
+        title:'title1',
+        content:[
+            {
+                title:'title2',
+                content:["content2","content2","contetn3"]
+            },
+            {
+                title:'title2',
+                content:["content2","content2","contetn3"]
+            },
+            {
+                title:'title2',
+                content:["content2","content2","contetn3"]
+            }
+        ]
+    };
 
     $('#maketable').on('click',function(){
-//        S3.menu.cssOff()          //自定义样式则调用cssOff
-        S3.menu.renderMenu(menu,function(e){console.log("点击了"+e)},"menu");
+       var menu1 =  S3.menu.makeMenu(menu,function(e){console.log("点击了"+e)});
+       var container = document.getElementById('menu');
+       container.appendChild(menu1);
+
+       // S3.menu.makeMenu('menu',menu,function(e){console.log("点击了"+e)});
     });
 
 

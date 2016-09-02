@@ -46,8 +46,10 @@
 
     /**
      * 获取当前事件的节点
+     * @param event
+     * @returns {*|Object}
      */
-    var getTarget = function(event){
+    var getTarget = function(){
         return event.target || event.srcElement;
     };
 

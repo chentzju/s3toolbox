@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>pageDemo</title>
+    <script src ="../js/jquery.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
+</head>
+<body>
+<h1>Page</h1>
+<p>
+    page页码组件，主要实现页面上数据页码的管理，通过调用页面插件，可以轻松管理页面上的table页码。页码管理封装在S3.page中，并 只对外提供一个S3.page接口，该接口返回一个Page对象，对象包含1个setPage属性，用来跳转到指定页码。
+</p>
+<div id = "page"></div>
+
+<div id = "page2"></div>
+
+<script>
+    var container = document.getElementById("page");
+    var page1 = S3.page(container, function(page){
+        console.log('正在加载第'+page+'页的数据');
+        //这里写你的加载数据的逻辑
+    }, {
+        currentpage:4,pagecount:10
+    });
+    var container2 = document.getElementById("page2");
+    var page2 = S3.page(container2, function(page){
+        console.log('这是第二个页码的打印数据，正在加载'+page+'页的数据');
+        //这里写你加载数据的逻辑
+    }, {
+        currentpage:6,pagecount:20
+    });
+</script>
+</body>
+</html>

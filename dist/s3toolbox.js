@@ -9,7 +9,7 @@ var S3 = (function ($) {
     }
 
     var S3 = function(){};
-    S3.VERSION = "1.0";
+    var VERSION = "1.0";
 
     var autocompleteCSS = ".autocomplete-container{" +
         "            border:solid 1px black;" +
@@ -31,33 +31,38 @@ var S3 = (function ($) {
         "        .autocomplete-container li.active{" +
         "            background: #8bcbff;" +
         "        }";
-    var menuCSS = "ul.menu-list {" +
-        "    display: block;" +
-        "    padding: 0;" +
-        "    margin: 0;" +
-        "    text-align: center;" +
-        "}" +
-        "ul.menu-list li {" +
-        "    display: inherit;" +
-        "    background: silver;" +
-        "    cursor: pointer;" +
-        "}" +
-        "ul.menu-list .menu-title {" +
-        "    background: #009697;" +
-        "    height: 1.6rem;" +
-        "    vertical-align: middle;" +
-        "    padding: 5px;" +
-        "    margin: 0;" +
-        "}" +
-        "" +
-        "ul.menu-content {" +
-        "    padding: 0;" +
-        "}" +
-        "ul.menu-content li {" +
-        "    height: 1.5rem;" +
-        "    background: #D1D1D1;" +
-        "    border-bottom: solid 1px silver;" +
-        "}";
+    var menuCSS = "ul.menu-list-level0{" +
+        "        display: block;" +
+        "        padding: 0;" +
+        "        margin: 0;" +
+        "        text-align: center;" +
+        "        border:solid #b7bcc0 1px;" +
+        "    }" +
+        "    ul.menu-list-level1{" +
+        "        display: inherit;" +
+        "        padding: 0;" +
+        "        margin: 0;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    div.menu-title-level0{" +
+        "        background-color: #2EC1E2;" +
+        "        padding:10px;" +
+        "        text-align:center;"    +
+        "    }" +
+        "    div.menu-title-level1{" +
+        "        background-color: #79DEEE;" +
+        "        padding:10px;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    li.menu-content-level1{" +
+        "        padding:8px;" +
+        "        cursor:pointer;" +
+        "    }" +
+        "    li.menu-content-level1:hover{" +
+        "        background: #dadada;" +
+        "        padding:10px;" +
+        "        cursor:pointer;" +
+        "    }";
     var pageCSS = " ul.pages {" +
         "display:block;" +
         "border:none;" +
@@ -136,6 +141,7 @@ var S3 = (function ($) {
     setCSS();
     
     S3.cssOff = cssOFF;
+    S3.version = function(){return Version;};
     return S3;
 })(jQuery);
 /**
@@ -549,8 +555,9 @@ var S3 = (function ($) {
 
 
         /**
-         * 将json数据填入form中。
-         * @param form,jsonObj,pre
+         * 将数据导入表单
+         * @param form
+         * @param jsonObj
          */
         var json2form = function(form,jsonObj,pre){
             var key,value,name,eles,match;
@@ -914,8 +921,10 @@ var S3 = (function ($) {
 
     /**
      * 获取当前事件的节点
+     * @param event
+     * @returns {*|Object}
      */
-    var getTarget = function(event){
+    var getTarget = function(){
         return event.target || event.srcElement;
     };
 
@@ -1090,40 +1099,39 @@ var S3 = (function ($) {
 
     /**
      * 制作Element对象
-     * @param tagName
-     * @param props
-     * @param children
+     * @param obj
+     * @return {Element}
      */
-    function makeElement(tagName,props,children){
-        if(!tagName)
-            return null;
+    function makeElement(obj){
         var utils = toolbox.utils;
         var el = toolbox.element;
+        if(!utils.isPlainObject(obj) || !obj['tagName'])
+            return null;
 
-        if (!utils.isArray(children) && children != null) {
-            children = Array.prototype.slice.call(arguments, 2)
+        if (!utils.isArray( obj['children'] ) &&  obj['children']  != null) {
+            obj.children = Array.prototype.slice.call(arguments, 2)
                 .filter(
                     function(value){
                         return !!value;
                     })
         }
 
-        if (utils.isArray(props)) {
-            children = props;
-            props = {}
+        if (utils.isArray(obj['props'])) {
+            obj.children = props;
+            obj.props = {}
         }
 
-        props = props || {};
-        children = children || [];
+        obj.props = obj.props || {};
+        obj.children = obj.children || [];
 
         //迭代
-        var childrenElements = children.map(function (item) {
+        var childrenElements = obj.children.map(function (item) {
                 if (utils.isPlainObject(item) && item.tagName)
-                    return makeElement(item.tagName, item['props'], item['children']);
+                    return makeElement(item);
                 else
                     return item;
             });
-        return el(tagName,props,childrenElements);
+        return el(obj.tagName,obj.props,childrenElements);
     }
 
     /**
@@ -1142,76 +1150,102 @@ var S3 = (function ($) {
  * Created by zjfh-chent on 2016/8/16.
  */
 +function(toolbox){
+
     /**
-     * 生成菜单，返回一个菜单HTML对象
-     * @param array
-     * @param callback
+     * 生成菜单，返回一个菜单Element对象
+     * @param list  菜单数据
+     * @param i 层级
      */
-    var makeMenu = function(array,callback){
-        if(!toolbox.utils.isArray(array))
-            return null;
-        var menuNode = document.createElement("ul");
-        menuNode.setAttribute('class','menu-list');
-        var content,title,child,body;
-        array.forEach(function(list){
-            content = document.createElement('li');
-            if(list['title']) {
-                title = document.createElement('div');
-                title.setAttribute('class','menu-title');
-                title.innerHTML = list.title;
-                content.appendChild(title);
+    var generatorMenu = function(list,i){
+        var i = i || 0;
+        var obj ={
+            tagName:'ul',
+            props:{'class':'menu-list-level'+i},
+            children:[]
+        };
+        if(!list && !toolbox.utils.isArray(list)){
+            list = [];
+        }
+        list.forEach(function(li){
+            var liobj = {
+                tagName:'li',
+                props:{'class':'menu-content-level'+ i},
+                children:[]
+            };
+            if(toolbox.utils.isPlainObject(li)){
+                if(li['title']){}
+                    liobj.children.push({
+                       tagName:'div',
+                       props:{'class':'menu-title-level'+ (i+1)},
+                       children:[li['title']]
+                    });
+                if(li['content'] && toolbox.utils.isArray(li['content'])){
+                    liobj.children.push(generatorMenu(li['content'],i+1));
+                }
             }
-            body = document.createElement('ul');
-            body.setAttribute('class','menu-content');
-            if(list.content && toolbox.utils.isArray(list.content)){
-                list.content.forEach(function(item){
-                    child = document.createElement('li');
-                    child.innerHTML = item;
-                    body.appendChild(child);
-                })
-            }else{
-                child = document.createElement('li');
-                child.innerHTML = list.content;
-                body.appendChild(child);
+            else{
+                    liobj.children.push(li)
             }
-            content.appendChild(body);
-            menuNode.appendChild(content);
+            obj.children.push(liobj);
         });
 
-        toolbox.eventManager.addHandler(menuNode,'click',function(){
-            var evt = toolbox.eventManager.getEvent(event);
-            var target = toolbox.eventManager.getTarget(evt);
-
-            if(target.getAttribute('class') && target.getAttribute('class').indexOf('menu-title') != -1){
-                //如果是标题
-                $(target).next().slideToggle();
-            }else{
-                //如果是内容
-                callback(target);
-            }
-
-        },false);
-        return menuNode;
+        return toolbox.element.makeElement(obj);
     };
 
 
-    /**
-     * 渲染菜单
-     * @param array
-     * @param callback
-     * @param container
-     */
-    var renderMenu = function(array,callback,container){
-        if(toolbox.utils.isArray(array) && container != null){
-            if(typeof container === "string")
-                container = document.getElementById(container);
-            container.appendChild(makeMenu(array,callback));
+
+    var options = {
+        onclick:function(target){
+            if($(target).attr("class").indexOf('title-level') != -1)
+                $(target).parent().find('ul').slideToggle();
+            options.callback(target);
+        },
+        callback:function(){
+
         }
     };
 
+    /**
+     * 渲染菜单
+     * @param container
+     * @param list
+     * @param callback
+     */
+    var renderMenu = function(container,list,callback){
+        container.appendChild(makeMenu(list,callback));
+    };
+    /**
+     * 生成菜单
+     * @param obj
+     * @param callback
+     * @returns {String|Element|*}
+     */
+    var makeMenu = function(obj,callback){
+        var container = document.createElement('div');
+        if(toolbox.utils.isPlainObject(obj)){
+            if(obj['title']){
+                var title = toolbox.element('div',{'class':'menu-title-level0'},[obj['title']]).render();
+                container.appendChild(title)
+            }
+            if(toolbox.utils.isArray(obj.content)){
+                var menu = generatorMenu(obj.content).render();
+                if(typeof callback == 'function')
+                    options.callback = callback;
+                toolbox.eventManager.addHandler(menu,'click',function(){
+                    var evt = toolbox.eventManager.getEvent();
+                    var target = toolbox.eventManager.getTarget(evt);
+                    options.onclick(target);
+                });
+                container.appendChild(menu);
+            }
+        }
+        return container;
+    };
+
+
     S3.menu = {
         makeMenu:makeMenu,
-        renderMenu:renderMenu,
+        renderMenu:renderMenu
     }
 }(S3);
 
@@ -1458,7 +1492,7 @@ var S3 = (function ($) {
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item.tagName,item.props,item.children));
+                startChild.push(el.makeElement(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -1469,7 +1503,7 @@ var S3 = (function ($) {
         if(options && options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
-                endChild.push(el.makeElement(item.tagName,item.props,item.children));
+                endChild.push(el.makeElement(item));
             });
         }
         endCol = el('td',null,endChild);
@@ -1481,7 +1515,9 @@ var S3 = (function ($) {
             if(startCol){
                 rowchild.push(startCol);
             }
-            for(var key in rowdata) rowchild.push(el.makeElement('td', {name: key}, [rowdata[key]]));
+            for(var key in rowdata) rowchild.push(el.makeElement(
+                {tagName:'td', props:{name: key}, children:[rowdata[key]]
+                }));
             if(endCol) {
                 rowchild.push(endCol);
             }

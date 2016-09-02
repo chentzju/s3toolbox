@@ -8,9 +8,23 @@
 </head>
 <body>
 <h1>S3.element用法样例</h1>
-<button id="Ele">基本转换，只转化一次</button>
-<button id="makeEle">深度转换</button>
 
+<p>
+    对于任意一个对象，都可以用一下的虚拟对象描述
+</p>
+<pre>
+    var obj = {
+    tagName:'li',
+    props:{'class':'li-active', id:'li-id'},
+    children:[ childObj or text ]
+    }
+</pre>
+<p>
+    因此只要定义了标签名tagName，属性props，子节点children（子节点也可以是标签列表，也可以是文本），就可以通过javascript 来描述一个DOM对象。element就是基于这个基础生成的对象，Element对象的几个重要属性就是，tagName,props,children （对应的，子节点也可以是Element，也可以使文本）。所以，只要定义了正确的obj的层级关系，就可以生成一个虚拟的DOM树， 从而渲染成页面DOM。
+</p>
+
+<button id="Ele">基本转换，只转化一层</button>
+<button id="makeEle">深度转换</button>
 
 <script>
     $(function(){
@@ -23,12 +37,21 @@
         var html = ul.render();
 
 
-
-
-        var ul2 = el.makeElement('ul',{id:'list'},[
-            {tagName:'li',props:{class:'item'},children:['深度转换 1']},
-            {tagName:'li',props:{class:'item'},children:['深度转换 2']},
-        ]);
+        var ul2 = el.makeElement(
+                {
+                    tagName:'ul',
+                    props:{id:'list'},
+                    children:[
+                '第一层', {tagName:'li',props:{class:'item'},children:[
+                    '第二层',
+                {tagName:'p',props:{},children:['第三层段落']},
+                {tagName:'button',props:{},children:['第三层按钮']}
+            ]},
+            {tagName:'li',props:{class:'item'},children:[
+                {tagName:'p',props:{},children:['第三层段落']},
+                {tagName:'button',props:{},children:['第三层按钮']}
+            ]}
+        ]});
         var html2 = ul2.render();
 
 

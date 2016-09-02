@@ -8,6 +8,11 @@
 </head>
 <body>
 <h1>S3.table用法样例</h1>
+<p>
+    表格插件通过传入的数据和配置，生成一个自定义的表格，表格插件基于element虚拟DOM，可以无限制任意扩展定制表格的 内容，但参数的格式须遵守element的参数规范。
+
+    表格插件封装在S3.table中，对外只提供一个table接口，生成一个表格,并返回一个Table对象的实例，该实例有一个setData属性，能够 在保持表头和表格配置不变的情况下，更新表体的数据。
+</p>
 <button id="maketable">点击这里生成一个表格</button>
 <button id="renderdata">点击这里更新表格数据</button>
 <div id = 'table1'></div>
