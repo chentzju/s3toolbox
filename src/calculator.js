@@ -96,7 +96,7 @@
             var newArr = [];
             if (arr1.length === arr2.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] * arr2[i];
+                    newArr[i] = multiply(arr1[i] , arr2[i]);
                 }
                 return newArr;
             } else {
@@ -114,7 +114,7 @@
             var newArr = [];
             if (arr1.length === arr2.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] + arr2[i];
+                    newArr[i] = add(arr1[i] , arr2[i]);
                 }
                 return newArr;
             } else {
@@ -131,9 +131,9 @@
          */
         var subArr = function (arr1, arr2) {
             var newArr = [];
-            if (a.length === b.length) {
+            if (arr1.length === arr1.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] - arr2[i];
+                    newArr[i] = sub(arr1[i],arr2[i]);
                 }
                 return newArr;
             } else {
@@ -149,7 +149,7 @@
          */
         var arrMulNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x * num
+                return multiply(x,num)
             });
         };
 
@@ -161,7 +161,7 @@
          */
         var arrSubNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x - num;
+                return sub(x,num);
             })
         };
 
@@ -173,7 +173,7 @@
          */
         var arrAddNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x + num;
+                return add(x,num);
             })
         };
 

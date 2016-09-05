@@ -4,76 +4,88 @@
     <meta charset="UTF-8">
     <title>S3.cal使用样例</title>
     <script src ="../js/jquery.min.js"></script>
-    <script src = "../dist/S3ToolBox.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
 </head>
 <body>
+
 <div>
-<h1>S3.cal使用样例</h1>
-<p>四则运算</p>
+    <h1>S3.cal使用样例</h1>
+    <h2>四则运算</h2>
+    <p>add: 确保精度的加法       add(a,b)   //a+b</p>
+    <p>sub: 确保精度的减法       sub(a,b)   //a-b</p>
+    <p>mul: 确保精度的乘法       mul(a,b)   //a*b</p>
+    <p>div: 相对精确的除法       div(a,b)   //a/b</p>
+
+    <h4>样例</h4>
     <p>请<strong>依次</strong>输入数字，运算符，数字</p>
-    <input type="text" class="aa">
-    <input type="text" class="type">
-    <input type="text" class="bb">
-    =
-    <input type="text" class="res">
-    <p>add:加法add(a,b)   //a+b</p>
-<p>    sub: 减法sub(a,b)   //a-b</p>
-<p>   mul: 乘法 mul(a,b)</p>
-<p>    div: 除法  div(a,b)</p>
+    <input type="number" id="num1"><input type="text" id="oper">
+    <input type="number" id="num2">
+    <button id="equ"> = </button>
+    <span id="res"></span>
+</div>
 
-<p>   金额问题</p>
 
-<p>    addComma: 增加金额的逗号 addComma(a)    //1000--->1,000</p>
-    <input type="text" class="num"> ===>  <input type="text" class="money">
+<div>
+<h2>金额问题</h2>
+    <p>addComma: 增加金额的逗号 addComma(a)    //1000--->1,000</p>
+    <p>removeComma: 一处逗号   removeComma(a)   //1,000--->1000</p>
+    <p>数字增加逗号：<input type="text" class="num"> ===>  <input type="text" class="money"></p>
+    <p>金额去掉逗号：<input type="text" class="money2"> ===>  <input type="text" class="num2"></p>
 
-    <p>    removeComma: 一处逗号   removeComma(a)   //1,000--->1000</p>
-    <input type="text" class="money2"> ===>  <input type="text" class="num2">
+</div>
 
-<p>    数组运算</p>
+<div>
+    <h2>数组运算</h2>
+    <p>   arrMul: arrMul(a,b)          //a[0]*b[0]  a[1]*b[1] 返回一个新数组</p>
+    <p>   arrAdd: addArr(a,b)          //a[0]-b[0]  a[1]-b[1] 返回一个新数组</p>
+    <p>   arrSub: subArr(a,b)           //a[0]-b[0]  a[1]-b[1] 返回一个新数组</p>
+
     <p>请<strong>依次</strong>输入数组，运算符，数组</p>
     <input type="text" class="cc" value="[1,2,3]">
     <input type="text" class="type2">
     <input type="text" class="dd" value="[1,2,3]">
-    =
-    <input type="text" class="res2">
-<p>   arrMul: arrMul(a,b)          //a[0]*b[0]  a[1]*b[1] 返回一个新数组</p>
-<p>   arrAdd: addArr(a,b)</p>
-<p>   arrSub: subArr(a,b)</p>
+    <button id="equ2">=</button>
+    <span  class="res2"></span>
+</div>
+
+
+<div>
+    <h2>数组与数字运算</h2>
+    <p>   arrAddNum: arrAddNum(a,n)   //a[i]+n  ---b[i]</p>
+    <p>   arrSubNum: arrSubNum(a,n)</p>
+    <p>    arrMulNum: arrMulNum(a,n)</p>
     <p>请<strong>依次</strong>输入数组，运算符，数字</p>
     <input type="text" class="ee" value="[1,2,3]">
     <input type="text" class="type3">
-    <input type="text" class="ff">
-    =
-    <input type="text" class="res3">
-<p>   arrAddNum: arrAddNum(a,n)   //a[i]+n  ---b[i]</p>
-<p>   arrSubNum: arrSubNum(a,n)</p>
-<p>    arrMulNum: arrMulNum(a,n)</p>
+    <input type="number" class="ff">
+    <button id="equ3">=</button>
+    <span  class="res3"></span>
+
 </div>
+
+
 <script>
     $(function () {
-
-        $('.bb').blur(function () {
-            var val=$(".type").val(),aa=$('.aa').val(),bb=$('.bb').val(),res;
+        $('#equ').on("click",function () {
+            var val=$("#oper").val(),aa=$('#num1').val(),bb=$('#num2').val(),res;
             switch (val){
                 case '+':
                     res=S3.cal.add(aa,bb);
-                    $('.res').val(res);
                     break;
                 case '-':
                     res=S3.cal.sub(aa,bb);
-                    $('.res').val(res);
                     break;
                 case '*':
                     res=S3.cal.mul(aa,bb);
-                    $('.res').val(res);
                     break;
                 case '/':
                     res=S3.cal.div(aa,bb);
-                    $('.res').val(res);
                     break;
             }
+            $('#res').html(res);
         });
-        
+
+
         //金额
         $('.num').blur(function () {
             var n=$(this).val();
@@ -84,51 +96,41 @@
             $('.num2').val(S3.cal.removeComma(n))
         })
 
-        //数组
 
-        $('.type2').blur(function () {
+        //数组
+        $('#equ2').on('click',function () {
             var val=$(".type2").val(),res2;
             var cc=[1,2,3],dd=[1,2,3];
 
             switch (val){
                 case '+':
-                    res=S3.cal.arrAdd(cc,dd);
-                    $('.res2').val(res);
+                    res2=S3.cal.arrAdd(cc,dd);
                     break;
                 case '-':
-//                  alert(1)
-                    //减法不对
-                    res=S3.cal.arrSub(cc,dd);
-                    alert(res);
-                    $('.res2').val(res);
+                    res2=S3.cal.arrSub(cc,dd);
                     break;
                 case '*':
-                    res=S3.cal.arrMul(cc,dd);
-                    $('.res2').val(res);
+                    res2=S3.cal.arrMul(cc,dd);
                     break;
-
             }
+            $('.res2').html("["+res2+"]");
         });
 
-        $('.ff').blur(function () {
-            var val=$(".type3").val(),ff=parseInt($('.ff').val()),res3;
+        $('#equ3').on('click',function () {
+            var val=$(".type3").val(),ff=$('.ff').val(),res3;
             var cc=[1,2,3];
-
             switch (val){
                 case '+':
-                    res=S3.cal.arrAddNum(cc,ff);
-                    $('.res3').val(res);
+                    res3=S3.cal.arrAddNum(cc,ff);
                     break;
                 case '-':
-                    res=S3.cal.arrSubNum(cc,ff);
-                    $('.res3').val(res);
+                    res3=S3.cal.arrSubNum(cc,ff);
                     break;
                 case '*':
-                    res=S3.cal.arrMulNum(cc,ff);
-                    $('.res3').val(res);
+                    res3=S3.cal.arrMulNum(cc,ff);
                     break;
-
             }
+            $('.res3').html("["+res3+"]");
         });
 
     })

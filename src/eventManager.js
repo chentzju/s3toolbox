@@ -84,16 +84,19 @@
 
         //正则表达式，匹配函数
         var pattern = /[a-zA-Z0-9-_]\([a-zA-Z0-9-_]*\)$/;
-        selector = typeof selector == 'string'?'#'+selector :"";
+        var pattern1 = /\([a-zA-Z0-9-_]*\)$/;
+        selector = typeof selector == 'string'? ""+selector :"";
         types.forEach(function(item){
             $(selector+" ["+item+"]").each(function(){
                 var fn = $(this).attr(item);
-                $(this).on(item,function(){
-                    if(pattern.test(fn))
-                        eval(fn);
+                $(this).on(item,function(event){
+                    evt = getEvent(event);
+                    target = getTarget(evt);
+                    if(pattern.test(fn)){
+                        f = fn.replace(pattern1,"(target)");
+                        eval(f);
+                    }
                     else{
-                        evt = getEvent(event);
-                        target = getTarget(evt);
                         f = fn+"(target)";
                         eval(f);
                     }

@@ -39,7 +39,6 @@ var S3 = (function ($) {
         "        border:solid #b7bcc0 1px;" +
         "    }" +
         "    ul.menu-list-level1{" +
-        "        display: inherit;" +
         "        padding: 0;" +
         "        margin: 0;" +
         "        cursor:pointer;" +
@@ -59,9 +58,7 @@ var S3 = (function ($) {
         "        cursor:pointer;" +
         "    }" +
         "    li.menu-content-level1:hover{" +
-        "        background: #dadada;" +
-        "        padding:10px;" +
-        "        cursor:pointer;" +
+        "        background: #dadada;" 
         "    }";
     var pageCSS = " ul.pages {" +
         "display:block;" +
@@ -722,7 +719,7 @@ var S3 = (function ($) {
             var newArr = [];
             if (arr1.length === arr2.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] * arr2[i];
+                    newArr[i] = multiply(arr1[i] , arr2[i]);
                 }
                 return newArr;
             } else {
@@ -740,7 +737,7 @@ var S3 = (function ($) {
             var newArr = [];
             if (arr1.length === arr2.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] + arr2[i];
+                    newArr[i] = add(arr1[i] , arr2[i]);
                 }
                 return newArr;
             } else {
@@ -757,9 +754,9 @@ var S3 = (function ($) {
          */
         var subArr = function (arr1, arr2) {
             var newArr = [];
-            if (a.length === b.length) {
+            if (arr1.length === arr1.length) {
                 for (var i = 0; i < arr1.length; i++) {
-                    newArr[i] = arr1[i] - arr2[i];
+                    newArr[i] = sub(arr1[i],arr2[i]);
                 }
                 return newArr;
             } else {
@@ -775,7 +772,7 @@ var S3 = (function ($) {
          */
         var arrMulNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x * num
+                return multiply(x,num)
             });
         };
 
@@ -787,7 +784,7 @@ var S3 = (function ($) {
          */
         var arrSubNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x - num;
+                return sub(x,num);
             })
         };
 
@@ -799,7 +796,7 @@ var S3 = (function ($) {
          */
         var arrAddNum = function (arr1, num) {
             return arr1.map(function (x) {
-                return x + num;
+                return add(x,num);
             })
         };
 
@@ -959,16 +956,19 @@ var S3 = (function ($) {
 
         //正则表达式，匹配函数
         var pattern = /[a-zA-Z0-9-_]\([a-zA-Z0-9-_]*\)$/;
-        selector = typeof selector == 'string'?'#'+selector :"";
+        var pattern1 = /\([a-zA-Z0-9-_]*\)$/;
+        selector = typeof selector == 'string'? ""+selector :"";
         types.forEach(function(item){
             $(selector+" ["+item+"]").each(function(){
                 var fn = $(this).attr(item);
-                $(this).on(item,function(){
-                    if(pattern.test(fn))
-                        eval(fn);
+                $(this).on(item,function(event){
+                    evt = getEvent(event);
+                    target = getTarget(evt);
+                    if(pattern.test(fn)){
+                        f = fn.replace(pattern1,"(target)");
+                        eval(f);
+                    }
                     else{
-                        evt = getEvent(event);
-                        target = getTarget(evt);
                         f = fn+"(target)";
                         eval(f);
                     }
@@ -1196,9 +1196,18 @@ var S3 = (function ($) {
 
     var options = {
         onclick:function(target){
-            if($(target).attr("class").indexOf('title-level') != -1)
-                $(target).parent().find('ul').slideToggle();
-            options.callback(target);
+            if($(target).attr("class").indexOf('title-level') != -1){
+                var ul = $(target).parent().find('ul');
+                if(ul.hasClass('active')){
+                    ul.removeClass('active');
+                    ul.slideUp();
+                }else{
+                    $('.menu-list-level0 .active').removeClass('active').slideUp();
+                    ul.addClass('active').slideToggle();
+                }
+            }else{
+                options.callback(target);
+            }
         },
         callback:function(){
 
@@ -1447,7 +1456,7 @@ var S3 = (function ($) {
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item.tagName,item.props,item.children));
+                startChild.push(el.makeElement(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -1456,7 +1465,7 @@ var S3 = (function ($) {
         rowchild.push(startCol);
         headdata.forEach(function(item){
             if(utils.isPlainObject(item)){
-                item = el.makeElement(item.tagName,item.props,item.children);
+                item = el.makeElement(item);
             }
             rowchild.push(el('th',null,[item]));
         });

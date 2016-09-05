@@ -39,7 +39,6 @@ var S3 = (function ($) {
         "        border:solid #b7bcc0 1px;" +
         "    }" +
         "    ul.menu-list-level1{" +
-        "        display: inherit;" +
         "        padding: 0;" +
         "        margin: 0;" +
         "        cursor:pointer;" +
@@ -59,9 +58,7 @@ var S3 = (function ($) {
         "        cursor:pointer;" +
         "    }" +
         "    li.menu-content-level1:hover{" +
-        "        background: #dadada;" +
-        "        padding:10px;" +
-        "        cursor:pointer;" +
+        "        background: #dadada;" 
         "    }";
     var pageCSS = " ul.pages {" +
         "display:block;" +

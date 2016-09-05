@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>S3.event使用样例</title>
     <script src ="../js/jquery.min.js"></script>
-    <script src = "../dist/S3ToolBox.min.js"></script>
+    <script src = "../dist/S3ToolBox.js"></script>
 </head>
 <body>
 <h1>S3.event使用样例</h1>
 <h3>自动绑定事件</h3>
-查看元素查看结果：<input type = "text" focus="helloworld()">
+查看元素查看结果：<input type = "text" focus="helloworld(e)">
 <button  click = "clickfunction">点击调用clickfunction</button>
 
 <h3>手动绑定和解除事件</h3>
@@ -23,10 +23,11 @@
 
 <script>
     //自动绑定事件
-    var helloworld = function(){
+    var helloworld = function(e){
+        console.log(e);
         alert("focus");
     };
-    var clickfunction = function(){
+    var clickfunction = function(e){
         alert("点击了button");
     };
     S3.eventManager.init();

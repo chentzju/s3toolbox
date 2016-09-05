@@ -22,7 +22,7 @@
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item.tagName,item.props,item.children));
+                startChild.push(el.makeElement(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -31,7 +31,7 @@
         rowchild.push(startCol);
         headdata.forEach(function(item){
             if(utils.isPlainObject(item)){
-                item = el.makeElement(item.tagName,item.props,item.children);
+                item = el.makeElement(item);
             }
             rowchild.push(el('th',null,[item]));
         });

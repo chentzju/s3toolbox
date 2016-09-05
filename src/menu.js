@@ -48,9 +48,18 @@
 
     var options = {
         onclick:function(target){
-            if($(target).attr("class").indexOf('title-level') != -1)
-                $(target).parent().find('ul').slideToggle();
-            options.callback(target);
+            if($(target).attr("class").indexOf('title-level') != -1){
+                var ul = $(target).parent().find('ul');
+                if(ul.hasClass('active')){
+                    ul.removeClass('active');
+                    ul.slideUp();
+                }else{
+                    $('.menu-list-level0 .active').removeClass('active').slideUp();
+                    ul.addClass('active').slideToggle();
+                }
+            }else{
+                options.callback(target);
+            }
         },
         callback:function(){
 
