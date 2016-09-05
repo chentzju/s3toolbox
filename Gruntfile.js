@@ -4,7 +4,7 @@
 module.exports = function(grunt) {
 
     var sources = [
-        'src/S3ToolBox.js',
+        'src/s3toolbox.js',
         'src/ajax.js',
         'src/autocomplete.js',
         'src/forms.js',
@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         
         //start config
-
+        pkg:grunt.file.readJSON('package.json'),
         //clean
         clean:{
             dist: {
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         concat:{
             dist:{
                 src:sources,
-                dest:'dist/s3toolbox.js'
+                dest:'dist/<%= pkg.name %>.js'
             }
         },
 
@@ -47,7 +47,7 @@ module.exports = function(grunt) {
                 files:[
                     {
                         src:'<%= concat.dist.dest %>',
-                        dest:'dist/s3toolbox.min.js'
+                        dest:'dist/<%= pkg.name %>.min.js'
                     }
                 ]
             }
