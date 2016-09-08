@@ -111,6 +111,8 @@
          * @returns {boolean}
          */
         var has = function (obj, key) {
+            if(obj !== Object(obj))
+                throw new TypeError('Object has called on a non-object');
             return obj != null && Object.prototype.hasOwnProperty.call(obj, key);
         };
 
@@ -120,7 +122,8 @@
          * @returns {Array}
          */
         var keys = function (obj) {
-            if (!isObject(obj)) return [];
+            if(obj !== Object(obj))
+                throw new TypeError('Object.keys called on a non-object');
             if (Object.keys) return Object.keys(obj);
             var keys = [];
             for (var key in obj) {
