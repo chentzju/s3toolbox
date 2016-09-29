@@ -41,7 +41,7 @@
                 m2 = t[1].length;
             }
             var m = Math.pow(10, Math.max(m1, m2));
-            return (Number(n1) * m + Number(n2) * m) / m;
+            return Math.round(Number(n1) * m + Number(n2) * m) / m;
         };
         /**
          * 确保精度的数值减法
@@ -60,7 +60,7 @@
                 m2 = t[1].length;
             }
             var m = Math.pow(10, Math.max(m1, m2));
-            return Number(((Number(n1) * m - Number(n2) * m) / m).toFixed(Math.max(m1, m2)));
+            return Number((Math.round(Number(n1) * m - Number(n2) * m) / m).toFixed(Math.max(m1, m2)));
         };
 
         /**

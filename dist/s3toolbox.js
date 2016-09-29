@@ -664,7 +664,7 @@ var S3 = (function ($) {
                 m2 = t[1].length;
             }
             var m = Math.pow(10, Math.max(m1, m2));
-            return (Number(n1) * m + Number(n2) * m) / m;
+            return Math.round(Number(n1) * m + Number(n2) * m) / m;
         };
         /**
          * 确保精度的数值减法
@@ -683,7 +683,7 @@ var S3 = (function ($) {
                 m2 = t[1].length;
             }
             var m = Math.pow(10, Math.max(m1, m2));
-            return Number(((Number(n1) * m - Number(n2) * m) / m).toFixed(Math.max(m1, m2)));
+            return Number((Math.round(Number(n1) * m - Number(n2) * m) / m).toFixed(Math.max(m1, m2)));
         };
 
         /**
@@ -2320,6 +2320,8 @@ var S3 = (function ($) {
          * @returns {boolean}
          */
         var has = function (obj, key) {
+            if(obj !== Object(obj))
+                throw new TypeError('Object has called on a non-object');
             return obj != null && Object.prototype.hasOwnProperty.call(obj, key);
         };
 
@@ -2329,7 +2331,8 @@ var S3 = (function ($) {
          * @returns {Array}
          */
         var keys = function (obj) {
-            if (!isObject(obj)) return [];
+            if(obj !== Object(obj))
+                throw new TypeError('Object.keys called on a non-object');
             if (Object.keys) return Object.keys(obj);
             var keys = [];
             for (var key in obj) {
