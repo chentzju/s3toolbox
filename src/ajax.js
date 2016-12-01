@@ -33,7 +33,7 @@
                     cache:false,
                     dataType: "html",
                     success: function(data){
-                        callback(JSON.parse(data));
+                        toolBox.utils.isFunction(callback) &&  callback(JSON.parse(data));
                     },
                     timeout:3000
                 });

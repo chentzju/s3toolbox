@@ -176,7 +176,7 @@ var S3 = (function ($) {
                     cache:false,
                     dataType: "html",
                     success: function(data){
-                        callback(JSON.parse(data));
+                        toolBox.utils.isFunction(callback) &&  callback(JSON.parse(data));
                     },
                     timeout:3000
                 });
@@ -1471,7 +1471,8 @@ var S3 = (function ($) {
         });
 
         //生成行的虚拟DOM
-        var tr = el('tr',null,rowchild);
+        var obj = options.th ? {"class":options.th}:null;
+        var tr = el('tr',obj,rowchild);
 
         //生成表头的虚拟DOM
         var thead = el('thead',{},[tr]);
@@ -1532,7 +1533,8 @@ var S3 = (function ($) {
             }
 
             //生成每一行的虚拟DOM 并作为表体的子元素
-            bodychild.push(el('tr',null,rowchild));
+            var obj = options.tr ? {"class":options.tr}:null;
+            bodychild.push(el('tr',obj,rowchild));
         }
 
         //生成标题的虚拟DOM
@@ -1634,6 +1636,7 @@ var S3 = (function ($) {
 
             parent = typeof parent == 'string'?document.getElementById(parent):parent;
             parent.innerHTML = "";
+            table.style = "width:100%";
             parent.appendChild(table);
 
             this.options = options;
