@@ -146,5 +146,5 @@
     toolbox.element = function(tagName,props,children){
         return new Element(tagName,props,children);
     };
-    toolbox.element.makeElement = makeElement
+    toolbox.element.make = makeElement
 }(S3);
