@@ -49,14 +49,14 @@ element模块对外有2个接口,均返回一个element对象，对象含有一�
      * @param obj       标签
      * @returns {Element}
      */
-    S3.element.makeElement(obj)  //深度转换
+    S3.element.make(obj)  //深度转换
 
     /**
     * Element对象的属性
     * 渲染Element对象为DOM对象
     */
      S3.element(tagName,props,children).render()
-     S3.element.makeElement(obj).render()
+     S3.element.make(obj).render()
 ```
 
 ## 3.使用方法
