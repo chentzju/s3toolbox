@@ -245,5 +245,5 @@
             arrMulNum: arrMulNum
         };
     
-    toolBox.cal = calculator;
+    toolBox.number = calculator;
 }(S3);
