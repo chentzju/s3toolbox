@@ -569,13 +569,13 @@ var S3 = (function ($) {
             }
         };
 
-    var form = {
+    var forms = {
         clearForm:clearForm,
         json2form:json2form,
         form2json:form2json
     };
 
-    toolBox.form = form ;
+    toolBox.forms = forms ;
 }(S3);
 
 /**
@@ -825,7 +825,7 @@ var S3 = (function ($) {
             arrMulNum: arrMulNum
         };
     
-    toolBox.cal = calculator;
+    toolBox.number = calculator;
 }(S3);
 /**
  * Event Manager 事件管理器
@@ -942,7 +942,7 @@ var S3 = (function ($) {
       types.push(type);
     };
 
-    toolBox.eventManager = {
+    toolBox.event = {
         init:init,
         addTypes:addTypes,
         addHandler: addHandler,
@@ -1101,7 +1101,7 @@ var S3 = (function ($) {
     toolbox.element = function(tagName,props,children){
         return new Element(tagName,props,children);
     };
-    toolbox.element.makeElement = makeElement
+    toolbox.element.make = makeElement
 }(S3);
 /**
  * Created by zjfh-chent on 2016/8/16.
