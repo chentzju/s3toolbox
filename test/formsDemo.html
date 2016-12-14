@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>S3.forms用法样例</title>
-    <script src ="../js/jquery.min.js"></script>
-    <script src = "../dist/S3ToolBox.min.js"></script>
+    <script src ="../js/jquery.js"></script>
+    <script src = "../dist/s3toolbox.js"></script>
 </head>
 <body>
 <h1>S3.forms用法样例</h1>
@@ -61,14 +61,14 @@
 
         $('#form2json').on('click',function(){
             alert("请查看console");
-            console.log(S3.form.form2json(form));   //表单导出json
+            console.log(S3.forms.form2json(form));   //表单导出json
         });
 
         $('#json2form').on('click',function(){
-            S3.form.json2form(form,obj);        //json导入表单
+            S3.forms.json2form(form,obj);        //json导入表单
         });
         $('#clear').on('click',function(){
-            S3.form.clearForm(form);                //清空表单
+            S3.forms.clearForm(form);                //清空表单
         });
 
     })

@@ -15,7 +15,7 @@ forms对象处理都依赖于表单中的元素都存在name属性，并将name�
 ```javascript
 /**
  * 将数据导入表单
- * @param form  form HTML对象
+ * @param forms  form HTML对象
  * @param jsonObj  json数据对象
  */
 S3.forms.json2form(form,data)    //将数据导入表单 接受表单对象和json格式的数据对象作为参数
@@ -80,7 +80,7 @@ var obj = {
      name4:'aaab',
      name5:'bbbb',
 };
-S3.form.json2form(form,obj);        //json导入表单
-console.log(S3.form.form2json(form));   //表单导出json
-S3.form.clearForm(form);                //清空表单
+S3.forms.json2form(form,obj);        //json导入表单
+console.log(S3.forms.form2json(form));   //表单导出json
+S3.forms.clearForm(form);                //清空表单
 ```
