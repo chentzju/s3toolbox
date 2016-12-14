@@ -1,15 +1,15 @@
 # eventManager
 
 事件管理器实现事件的绑定、解绑、事件对象的获取、目标获取以及事件对象管理。
-同事支持页面属性自动绑定事件。事件的方法封装在S3.eventManager对象中。
+同事支持页面属性自动绑定事件。事件的方法封装在S3.event对象中。
 
-## eventManager
+## event
 1. [自动绑定](#1)
 2. [接口定义](#2)
 3. [使用方法](#3)
 
 ## 1.自动绑定
-事件自动绑定的结构为S3.eventManager.init()，该接口实现了对页面上特定标签的扫描和事件的自动绑定。
+事件自动绑定的结构为S3.event.init()，该接口实现了对页面上特定标签的扫描和事件的自动绑定。
 
 ```javascript
 /**
@@ -25,7 +25,7 @@ addTypes(type)     //增加自动绑定的事件类型
 'blur','focus','click','dbclick','mouseover','mousedown','mouseup','mousemove','mouseout','mouseenter','mouseleave',
 'change','load','unload','resize','scroll','select','submit','keydown','keypress','keyup','error'
 ```
-如果需要添加别的，就需要调用S3.eventManager.addTypes(typeName)来增加自动绑定的事件类型。
+如果需要添加别的，就需要调用S3.event.addTypes(typeName)来增加自动绑定的事件类型。
 
 #### 如何绑定：
 
@@ -55,7 +55,7 @@ var helloworld = function(){
 var clickfunction = function(){
     cconsole.log("点击了button");
 };
-S3.eventManager.init();
+S3.event.init();
 ```
 
 ## 2.接口定义
@@ -103,12 +103,12 @@ var element = document.getElementById("myele");
 var handler = function(){
     //do something
 };
-S3.eventManager.addHandler(element,"click",handler);
-S3.eventManager.removeHandler(element,"click",handler);
+S3.event.addHandler(element,"click",handler);
+S3.event.removeHandler(element,"click",handler);
 ```
 #### 事件对象处理
 ```
-var em = S3.eventManager;
+var em = S3.event;
 em.addHandler(element,"click",function(){
     var evt = em.getEvent();          //获取事件
     var target = em.getTarget(evt);   //获取触发事件的对象

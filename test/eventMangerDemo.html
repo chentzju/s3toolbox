@@ -30,7 +30,7 @@
     var clickfunction = function(e){
         alert("点击了button");
     };
-    S3.eventManager.init();
+    S3.event.init();
 
 
 
@@ -44,16 +44,16 @@
             alert('已绑定事件')
         };
         var removeEvent = function(){
-            S3.eventManager.removeHandler(bind,"click",bindEvent);
+            S3.event.removeHandler(bind,"click",bindEvent);
             alert("再点击前面的绑定试试");
         };
-        S3.eventManager.addHandler(bind,"click",bindEvent);
-        S3.eventManager.addHandler(remove,'click',removeEvent);
+        S3.event.addHandler(bind,"click",bindEvent);
+        S3.event.addHandler(remove,'click',removeEvent);
 
 
         //事件对象处理
         var div = document.getElementById("ev");
-        var em = S3.eventManager;
+        var em = S3.event;
         em.addHandler(div,"click",function(){
             var evt = em.getEvent();          //获取事件
             var target = em.getTarget(evt);   //获取触发事件的对象
