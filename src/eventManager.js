@@ -113,7 +113,7 @@
       types.push(type);
     };
 
-    toolBox.eventManager = {
+    toolBox.event = {
         init:init,
         addTypes:addTypes,
         addHandler: addHandler,
