@@ -94,11 +94,11 @@
             }
         };
 
-    var form = {
+    var forms = {
         clearForm:clearForm,
         json2form:json2form,
         form2json:form2json
     };
 
-    toolBox.form = form ;
+    toolBox.forms = forms ;
 }(S3);
