@@ -40,7 +40,7 @@
                     ctext = ctext + " pgEmpty";
                     buttonNode.setAttribute('class',ctext);
                 }else{
-                    toolBox.eventManager.addHandler(buttonNode,'click',function(){
+                    toolBox.event.addHandler(buttonNode,'click',function(){
                         callback(destPage);
                         renderPage(destPage, pageCount,callback,container)
                     },false);
@@ -52,7 +52,7 @@
                     ctext = ctext + " pgEmpty";
                     buttonNode.setAttribute('class',ctext);
                 }else{
-                    toolBox.eventManager.addHandler(buttonNode,'click',function(){
+                    toolBox.event.addHandler(buttonNode,'click',function(){
                         callback(destPage);
                         renderPage(destPage, pageCount,callback,container)
                     },false);
@@ -101,9 +101,9 @@
                     ctxt = ctxt + ' pgCurrent';
                     listButton.setAttribute('class',ctxt);
                 }else{
-                    toolBox.eventManager.addHandler(listButton,'click',function() {
-                        var evt = toolBox.eventManager.getEvent(event);
-                        var target = toolBox.eventManager.getTarget(evt);
+                    toolBox.event.addHandler(listButton,'click',function() {
+                        var evt = toolBox.event.getEvent(event);
+                        var target = toolBox.event.getTarget(evt);
                         var num = target.innerHTML;
                         callback(parseInt(num));
                         renderPage(parseInt(num), pageCount,callback,container);

@@ -45,7 +45,7 @@
             document.body.appendChild(container);
             this.container = container;
             //绑定事件
-            var em = toolbox.eventManager;
+            var em = toolbox.event;
             em.addHandler(container,'mouseover',function(event){
                 var evt = em.getEvent(event);
                 var target = em.getTarget(evt);
@@ -181,7 +181,7 @@
         
         //对输入框绑定方法
         if(typeof callback == 'function'){
-            var em = toolbox.eventManager;
+            var em = toolbox.event;
 
             //方法均是对selector对象的操作，除了在输入框输入内容
 

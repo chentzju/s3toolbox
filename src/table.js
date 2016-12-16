@@ -22,7 +22,7 @@
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item));
+                startChild.push(el.make(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -31,7 +31,7 @@
         rowchild.push(startCol);
         headdata.forEach(function(item){
             if(utils.isPlainObject(item)){
-                item = el.makeElement(item);
+                item = el.make(item);
             }
             rowchild.push(el('th',null,[item]));
         });
@@ -68,7 +68,7 @@
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item));
+                startChild.push(el.make(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -79,7 +79,7 @@
         if(options && options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
-                endChild.push(el.makeElement(item));
+                endChild.push(el.make(item));
             });
         }
         endCol = el('td',null,endChild);
@@ -91,7 +91,7 @@
             if(startCol){
                 rowchild.push(startCol);
             }
-            for(var key in rowdata) rowchild.push(el.makeElement(
+            for(var key in rowdata) rowchild.push(el.make(
                 {tagName:'td', props:{name: key}, children:[rowdata[key]]
                 }));
             if(endCol) {
@@ -115,7 +115,7 @@
      * @param callback
      */
     function bindCallBack(table,callback){
-        var em = toolbox.eventManager;
+        var em = toolbox.event;
         em.addHandler(table,'click',function(){
             var evt = em.getEvent(event);
             var target = em.getTarget(evt);

@@ -294,7 +294,7 @@ var S3 = (function ($) {
             document.body.appendChild(container);
             this.container = container;
             //绑定事件
-            var em = toolbox.eventManager;
+            var em = toolbox.event;
             em.addHandler(container,'mouseover',function(event){
                 var evt = em.getEvent(event);
                 var target = em.getTarget(evt);
@@ -430,7 +430,7 @@ var S3 = (function ($) {
         
         //对输入框绑定方法
         if(typeof callback == 'function'){
-            var em = toolbox.eventManager;
+            var em = toolbox.event;
 
             //方法均是对selector对象的操作，除了在输入框输入内容
 
@@ -1104,6 +1104,72 @@ var S3 = (function ($) {
     toolbox.element.make = makeElement
 }(S3);
 /**
+ * Created by zjfh-chent on 2016/12/16.
+ */
+(function(toolbox){
+    var CookieStorage  = function(maxage,path){
+        var cookie = (function(){
+            var cookietemp = {};
+            var all = document.cookie;
+            if(all === "") return cookietemp;
+            var list = all.split("; ");
+            for(var i=0;i<list.length;i++){
+                var cookie = list[i];
+                var p = cookie.indexOf("=");
+                var name = cookie.substring(0,p); //cookie name
+                var value = cookie.substring(p+1);  //cookie value
+                value = decodeURIComponent(value);
+                cookietemp[name] = value;
+            }
+            return cookietemp;
+        }());
+
+        //length
+        var keys = [];
+        for(var key in cookie) keys.push(key);
+        this.length = keys.length;
+
+        //key
+        this.key = function(n){
+            if(n<0 || n>=keys.length) return null;
+            return keys[n];
+        }
+
+        this.getItem = function(key){
+            return cookie[key] || null;
+        }
+
+        this.setItem = function(key,value){
+            if(!(key in cookie)){
+                keys.push(key);
+                this.length++;
+            }
+
+            cookie[key] = value;
+
+            var localstr = key + "=" + encodeURIComponent(value);
+            //属性 暂不考虑
+            document.cookie = localstr;
+        }
+    };
+    var cookieStorage = new CookieStorage();
+
+    toolbox.istore =  {
+        get:function(key){
+            if(sessionStorage)
+                return sessionStorage.getItem(key);
+            else
+                return cookieStorage.getItem(key);
+        },
+        set:function(key,value){
+            if(sessionStorage)
+                sessionStorage.setItem(key,value);
+            else
+                cookieStorage.setItem(key,value);
+        }
+    };
+})(S3);
+/**
  * Created by zjfh-chent on 2016/8/16.
  */
 +function(toolbox){
@@ -1146,7 +1212,7 @@ var S3 = (function ($) {
             obj.children.push(liobj);
         });
 
-        return toolbox.element.makeElement(obj);
+        return toolbox.element.make(obj);
     };
 
 
@@ -1197,9 +1263,9 @@ var S3 = (function ($) {
                 var menu = generatorMenu(obj.content).render();
                 if(typeof callback == 'function')
                     options.callback = callback;
-                toolbox.eventManager.addHandler(menu,'click',function(){
-                    var evt = toolbox.eventManager.getEvent();
-                    var target = toolbox.eventManager.getTarget(evt);
+                toolbox.event.addHandler(menu,'click',function(){
+                    var evt = toolbox.event.getEvent();
+                    var target = toolbox.event.getTarget(evt);
                     options.onclick(target);
                 });
                 container.appendChild(menu);
@@ -1256,7 +1322,7 @@ var S3 = (function ($) {
                     ctext = ctext + " pgEmpty";
                     buttonNode.setAttribute('class',ctext);
                 }else{
-                    toolBox.eventManager.addHandler(buttonNode,'click',function(){
+                    toolBox.event.addHandler(buttonNode,'click',function(){
                         callback(destPage);
                         renderPage(destPage, pageCount,callback,container)
                     },false);
@@ -1268,7 +1334,7 @@ var S3 = (function ($) {
                     ctext = ctext + " pgEmpty";
                     buttonNode.setAttribute('class',ctext);
                 }else{
-                    toolBox.eventManager.addHandler(buttonNode,'click',function(){
+                    toolBox.event.addHandler(buttonNode,'click',function(){
                         callback(destPage);
                         renderPage(destPage, pageCount,callback,container)
                     },false);
@@ -1317,9 +1383,9 @@ var S3 = (function ($) {
                     ctxt = ctxt + ' pgCurrent';
                     listButton.setAttribute('class',ctxt);
                 }else{
-                    toolBox.eventManager.addHandler(listButton,'click',function() {
-                        var evt = toolBox.eventManager.getEvent(event);
-                        var target = toolBox.eventManager.getTarget(evt);
+                    toolBox.event.addHandler(listButton,'click',function() {
+                        var evt = toolBox.event.getEvent(event);
+                        var target = toolBox.event.getTarget(evt);
                         var num = target.innerHTML;
                         callback(parseInt(num));
                         renderPage(parseInt(num), pageCount,callback,container);
@@ -1413,7 +1479,7 @@ var S3 = (function ($) {
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item));
+                startChild.push(el.make(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -1422,7 +1488,7 @@ var S3 = (function ($) {
         rowchild.push(startCol);
         headdata.forEach(function(item){
             if(utils.isPlainObject(item)){
-                item = el.makeElement(item);
+                item = el.make(item);
             }
             rowchild.push(el('th',null,[item]));
         });
@@ -1459,7 +1525,7 @@ var S3 = (function ($) {
         if(options && options.start && utils.isArray(options.start)){
             var start = options.start;
             start.forEach(function(item){
-                startChild.push(el.makeElement(item));
+                startChild.push(el.make(item));
             });
         }
         startCol = el('th',null,startChild);
@@ -1470,7 +1536,7 @@ var S3 = (function ($) {
         if(options && options.end && utils.isArray(options.end)){
             var end = options.end;
             end.forEach(function(item){
-                endChild.push(el.makeElement(item));
+                endChild.push(el.make(item));
             });
         }
         endCol = el('td',null,endChild);
@@ -1482,7 +1548,7 @@ var S3 = (function ($) {
             if(startCol){
                 rowchild.push(startCol);
             }
-            for(var key in rowdata) rowchild.push(el.makeElement(
+            for(var key in rowdata) rowchild.push(el.make(
                 {tagName:'td', props:{name: key}, children:[rowdata[key]]
                 }));
             if(endCol) {
@@ -1506,7 +1572,7 @@ var S3 = (function ($) {
      * @param callback
      */
     function bindCallBack(table,callback){
-        var em = toolbox.eventManager;
+        var em = toolbox.event;
         em.addHandler(table,'click',function(){
             var evt = em.getEvent(event);
             var target = em.getTarget(evt);

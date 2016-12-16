@@ -11,6 +11,7 @@ module.exports = function(grunt) {
         'src/calculator.js',
         'src/eventManager.js',
         'src/element.js',
+        'src/istore.js',
         'src/menu.js',
         'src/page.js',
         'src/table.js',

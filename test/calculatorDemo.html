@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>S3.cal使用样例</title>
+    <title>S3.number使用样例</title>
     <script src ="../js/jquery.min.js"></script>
     <script src = "../dist/S3ToolBox.js"></script>
 </head>
 <body>
 
 <div>
-    <h1>S3.cal使用样例</h1>
+    <h1>S3.number使用样例</h1>
     <h2>四则运算</h2>
     <p>add: 确保精度的加法       add(a,b)   //a+b</p>
     <p>sub: 确保精度的减法       sub(a,b)   //a-b</p>
@@ -70,16 +70,16 @@
             var val=$("#oper").val(),aa=$('#num1').val(),bb=$('#num2').val(),res;
             switch (val){
                 case '+':
-                    res=S3.cal.add(aa,bb);
+                    res=S3.number.add(aa,bb);
                     break;
                 case '-':
-                    res=S3.cal.sub(aa,bb);
+                    res=S3.number.sub(aa,bb);
                     break;
                 case '*':
-                    res=S3.cal.mul(aa,bb);
+                    res=S3.number.mul(aa,bb);
                     break;
                 case '/':
-                    res=S3.cal.div(aa,bb);
+                    res=S3.number.div(aa,bb);
                     break;
             }
             $('#res').html(res);
@@ -89,11 +89,11 @@
         //金额
         $('.num').blur(function () {
             var n=$(this).val();
-            $('.money').val(S3.cal.addComma(n))
+            $('.money').val(S3.number.addComma(n))
         })
         $('.money2').blur(function () {
             var n=$(this).val();
-            $('.num2').val(S3.cal.removeComma(n))
+            $('.num2').val(S3.number.removeComma(n))
         })
 
 
@@ -104,13 +104,13 @@
 
             switch (val){
                 case '+':
-                    res2=S3.cal.arrAdd(cc,dd);
+                    res2=S3.number.arrAdd(cc,dd);
                     break;
                 case '-':
-                    res2=S3.cal.arrSub(cc,dd);
+                    res2=S3.number.arrSub(cc,dd);
                     break;
                 case '*':
-                    res2=S3.cal.arrMul(cc,dd);
+                    res2=S3.number.arrMul(cc,dd);
                     break;
             }
             $('.res2').html("["+res2+"]");
@@ -121,13 +121,13 @@
             var cc=[1,2,3];
             switch (val){
                 case '+':
-                    res3=S3.cal.arrAddNum(cc,ff);
+                    res3=S3.number.arrAddNum(cc,ff);
                     break;
                 case '-':
-                    res3=S3.cal.arrSubNum(cc,ff);
+                    res3=S3.number.arrSubNum(cc,ff);
                     break;
                 case '*':
-                    res3=S3.cal.arrMulNum(cc,ff);
+                    res3=S3.number.arrMulNum(cc,ff);
                     break;
             }
             $('.res3').html("["+res3+"]");

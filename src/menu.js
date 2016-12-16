@@ -41,7 +41,7 @@
             obj.children.push(liobj);
         });
 
-        return toolbox.element.makeElement(obj);
+        return toolbox.element.make(obj);
     };
 
 
@@ -92,9 +92,9 @@
                 var menu = generatorMenu(obj.content).render();
                 if(typeof callback == 'function')
                     options.callback = callback;
-                toolbox.eventManager.addHandler(menu,'click',function(){
-                    var evt = toolbox.eventManager.getEvent();
-                    var target = toolbox.eventManager.getTarget(evt);
+                toolbox.event.addHandler(menu,'click',function(){
+                    var evt = toolbox.event.getEvent();
+                    var target = toolbox.event.getTarget(evt);
                     options.onclick(target);
                 });
                 container.appendChild(menu);
