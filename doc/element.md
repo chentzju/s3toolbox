@@ -1,4 +1,4 @@
-# 虚拟DOM element
+# 虚拟DOM S3.element
 
 element.js中封装了虚拟DOM的对象工具element。该模块中声明了一个虚拟的DOM对象Element。
 Element对象可以以javascript对象的方式生成类似DOM结构的虚拟树，DOM处理性能
