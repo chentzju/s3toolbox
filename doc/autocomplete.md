@@ -1,4 +1,3 @@
-
 ## 自动补全autocomplete
 autocomplete的功能是对指定的输入框input元素绑定autocomplete功能，每次当该输入框中输入内容后，会调用绑定的数据读取函数
 callback，并将输入框的内容作为输入参数，callback返回的后台数据，将作为搜索结果展示在列表中，并供用户选择。

@@ -1,4 +1,4 @@
-# element
+# 虚拟DOM element
 
 element.js中封装了虚拟DOM的对象工具element。该模块中声明了一个虚拟的DOM对象Element。
 Element对象可以以javascript对象的方式生成类似DOM结构的虚拟树，DOM处理性能
@@ -79,7 +79,7 @@ var obj = {
             {tagName:'li',props:{class:'item'},children:['Item 1']},   //没有像上面一样调用el先封装成Element
             {tagName:'li',props:{class:'item'},children:['Item 2']}     //没有像上面一样调用el先封装成Element
          ]}
-var ul2 = el.makeElement(obj);   //深度封装
+var ul2 = el.make(obj);   //深度封装
 
 //渲染
 var html = ul.render();  //  <ul id="list"><li class="item">Item 1</li><li class="item">Item 2</li></ul>

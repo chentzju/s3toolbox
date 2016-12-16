@@ -38,8 +38,9 @@ S3工具箱在加载时会自动加载自带的CSS，CSS定义了S3自带的auto
 | [autocomplete.js](autocomplete)  | 自动补全工具，实现搜索框的搜索结果自动补全   |
 | [calculator.js](calculator)      | 通用的计算器，处理一些基础的计算，解决javascript的计算精度问题  |
 |[element.js](element)       |      虚拟Dom对象工具,用来生成虚拟DOM对象，提高性能，并能渲染成真实DOM|
-|[eventManager.js](eventManager)    |  事件管理工具，提供兼容浏览器的事件管理功能，并提供自动绑定事件的功能|
+|[eventManager.js](event)    |  事件管理工具，提供兼容浏览器的事件管理功能，并提供自动绑定事件的功能|
 |[forms.js](forms)           | form表单工具，实现json数据类型到form表单之间的转换|
+|[istore.js](istore)           |  菜单插件，根据数据结构生成菜单|
 |[menu.js](menu)           |  菜单插件，根据数据结构生成菜单|
 |[page.js](page)         | 页码插件，实现一个能够按需翻页的页码插件|
 |[table.js](table)       | 表格插件，能够更具定义生成任意类型的表格|

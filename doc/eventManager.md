@@ -1,4 +1,4 @@
-# eventManager
+# 事件管理 event
 
 事件管理器实现事件的绑定、解绑、事件对象的获取、目标获取以及事件对象管理。
 同事支持页面属性自动绑定事件。事件的方法封装在S3.event对象中。
@@ -66,34 +66,34 @@ S3.event.init();
 * @param type   事件类型  如：click
 * @param handler    处理函数
 */
-S3.evetnManager.addHandler(element,type,handler)         //绑定事件
+S3.event.addHandler(element,type,handler)         //绑定事件
 /**
 * 事件解除绑定，考虑浏览器兼容性
 * @param element    元素
 * @param type   事件类型
 * @param handler    处理函数
 */
-S3.evetnManager.removeHandler(element,type,handler)       //解除绑定
+S3.event.removeHandler(element,type,handler)       //解除绑定
 /**
 * @returns {Event|*}
 */
-S3.evetnManager.getEvent()   //获取当前触发的事件
+S3.event.getEvent()   //获取当前触发的事件
 
 /**
 * 获取当前事件的节点
 * @param event   getEvent()的返回值
 * @returns {*|Object}
 */
-S3.evetnManager.getTarget(event)  //获取触发事件的节点
+S3.event.getTarget(event)  //获取触发事件的节点
 /**
  * 停止冒泡
  * @param event
  */
-stopPropagation(event)     //关闭事件冒泡  通常在父对象存在事件委托的时候使用
+S3.event.stopPropagation(event)     //关闭事件冒泡  通常在父对象存在事件委托的时候使用
 /**
  * 关闭默认事件
  */
-preventDefault(event)      //关闭默认事件， 通常用在禁用<a>标签的href跳转
+S3.event.preventDefault(event)      //关闭默认事件， 通常用在禁用<a>标签的href跳转
 ```
 ## 3.使用方法
 
