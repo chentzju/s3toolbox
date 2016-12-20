@@ -28,11 +28,11 @@
         this.key = function(n){
             if(n<0 || n>=keys.length) return null;
             return keys[n];
-        }
+        };
 
         this.getItem = function(key){
             return cookie[key] || null;
-        }
+        };
 
         this.setItem = function(key,value){
             if(!(key in cookie)){
@@ -45,7 +45,23 @@
             var localstr = key + "=" + encodeURIComponent(value);
             //属性 暂不考虑
             document.cookie = localstr;
-        }
+        };
+        this.removeItem = function(key){
+            if(!(key in cookie)) return;
+
+            delete cookie[key]; //对object去掉属性
+
+            for(var i = 0;i < keys.length;i++){
+                if(keys[i] === key){
+                    keys.splice(i,1);
+                    break;
+                }
+            }
+
+            this.length--;    //cookie 个数--
+
+            document.cookie = key + "=; max-age=0";
+        };
     };
     var cookieStorage = new CookieStorage();
 
@@ -61,6 +77,12 @@
                 sessionStorage.setItem(key,value);
             else
                 cookieStorage.setItem(key,value);
+        },
+        remove:function(key,value){
+            if(sessionStorage)
+                sessionStorage.removeItem(key);
+            else
+                cookieStorage.removeItem(key,value);
         }
     };
 })(S3);
