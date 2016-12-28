@@ -24,6 +24,8 @@ ajax的调用方式与原来 var result = execjava(xxx)的调用方式稍有差�
     /**
      * ajax方法，通用，可以
      * 实现任意ajax调用
+     * @param {String} url   路径
+     * @param {String} method  调用方式 默认post
      * @param {String} async   是否异步，true 异步，false同步
      * @param {String} param   参数，json对象/html等
      * @param {String} dataType   参数类型,"json"/"html"
