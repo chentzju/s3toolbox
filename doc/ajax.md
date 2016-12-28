@@ -24,14 +24,13 @@ ajax的调用方式与原来 var result = execjava(xxx)的调用方式稍有差�
     /**
      * ajax方法，通用，可以
      * 实现任意ajax调用
-     *
-     * @param url        服务器接口地址
-     * @param paramStr   参数，json对象
-     * @param callback  回调函数，参数是调用返回值
-     * @param async     是否异步，true 异步，false同步
-     * @param method    报文提交方式，默认POST
+     * @param {String} async   是否异步，true 异步，false同步
+     * @param {String} param   参数，json对象/html等
+     * @param {String} dataType   参数类型,"json"/"html"
+     * @param {Function}callback  回调函数，参数是调用返回值
+     * @param {Function}onerror
      */
-    var ajax = function(url,paramStr,callback,async,method){...}
+    var ajax = function(url,method,async,param,dataType,callback,onerror){...}
 
     /**
      * execjava，与S3的原execjava基本相同，稍作了修改

@@ -6,38 +6,36 @@
 
     /**
      * ajax方法，通用
-     * @param url
-     * @param paramStr
-     * @param callback
-     * @param async
-     * @param method
+     * @param {String} url
+     * @param {String} method
+     * @param {String} async
+     * @param {String} param
+     * @param {String} dataType
+     * @param {Function}callback
+     * @param {Function}onerror
      */
-    var ajax = function(url,paramStr,callback,async,method){
-        if(paramStr == null)
-            paramStr = "";
-        if(async == null)
-            async = true;      //异步优先
-        if(method == null)
-            method = "POST";  //安全优先
-        if(paramStr.indexOf('__port=') < 0){
-            paramStr += "&__port=" + location.port;
-        }
+    var ajax = function(url,method,async,param,dataType,callback,onerror){
+        param = param || "";
+        async = async || true;      //异步优先
+        method = method || "POST";  //安全优先
+        dataType = dataType || "json";
         try {
-            if(async){
-                $.ajax({
-                    type: method,
-                    url: url,
-                    async: async,
-                    contentType:"application/x-www-form-urlencoded; charset=UTF-8",
-                    data:paramStr,
-                    cache:false,
-                    dataType: "html",
-                    success: function(data){
-                        toolBox.utils.isFunction(callback) &&  callback(JSON.parse(data));
-                    },
-                    timeout:3000
-                });
-            }
+            $.ajax({
+                type: method,
+                url: url,
+                async: async,
+                contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+                data:param,
+                cache:false,
+                dataType: dataType,
+                success: function(data){
+                    toolBox.utils.isFunction(callback) && callback(JSON.parse(data));
+                },
+                error: function(){
+                    toolBox.utils.isFunction(callback) && onerror();
+                },
+                timeout:3000
+            });
         }catch(e){
             throw new Error(e);
         }
@@ -47,15 +45,17 @@
     var dataSetIdList = "__ids";
     var dataSetParams = "__params";
     var dataSetAppId = "__appId";
-    var custId,rootPath;
 
     function testConfig(){
         if(!toolBox.utils.isUndefined(S3Config)){
-            custId = S3Config.getConfig("s3_custId");
-            rootPath = S3Config.getConfig("s3_root");
-            return true;
+            var custId = S3Config.getConfig("s3_custId");
+            var rootPath = S3Config.getConfig("s3_root");
+            return {
+                custId:custId,
+                rootPath:rootPath
+            };
         }else{
-            return false;
+            return null;
         }
     }
     /**
@@ -108,41 +108,42 @@
      */
     var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){
         //查询是否有S3的定义
-        if(!testConfig()){
+        var config = testConfig();
+        if(!config){
             throw new Error("No S3Config detected!! Please make sure S3Config.php is properly included.");
-            return;
+            return false;
         }
         //如果没有custId和rootPath 无法进行了
-        if(custId == null || rootPath == null)
-            return;
         //id必输
-        if(!id)
-            return;
+        if(config.custId == null || config.rootPath == null || !id)
+            return false;
         //如果是S3，那没问题
-        if(!appId)
-            appId = custId;
+        appId = appId || custId;
         //默认POST
-        if(!httpMethod)
-            httpMethod = 'POST';
+        httpMethod = httpMethod || 'POST';
         //默认异步调用
-        if(!async)
-            async = true;
+        async = async || true;
         //如果没有地址，默认是S3指定
         if(!uri)
-            uri = rootPath + '~main/ajax.php';
+            uri = config.rootPath + '~main/ajax.php';
         //如果没有指定系统错误处理函数,则使用默认函数
         if(!onError)
             onError = localOnError;
-        //处理参数
-        var paramObj =treatParams(param);
-        var paramStr = dataSetIdList + '=' + encodeURIComponent(id) + '&' + dataSetParams + '=' + encodeURIComponent(JSON.stringify(paramObj)) + '&'+dataSetAppId+'=' + encodeURIComponent(appId);
 
-        //o了，可以进行ajax调用了
+        //处理参数
+        var paramObj = treatParams(param);
+        var paramStr = dataSetIdList + '=' + encodeURIComponent(id) + '&' + dataSetParams + '=' + encodeURIComponent(JSON.stringify(paramObj)) + '&'+dataSetAppId+'=' + encodeURIComponent(appId);
+        if(paramStr.indexOf('__port=') < 0){
+            paramStr += "&__port=" + location.port;
+        }
+        var dataType = "html";
+        
         try{
-            ajax(uri, paramStr, callback, async, httpMethod);
+            ajax(uri, httpMethod, async, paramStr,dataType, callback,onError);
         }catch(e){
             onError(e);
         }
+
     };
     toolBox.ajax = ajax;
     toolBox.execjava = execjava;
