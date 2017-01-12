@@ -241,7 +241,7 @@
             if(isArrayLike(array)){
                 var i;
                 for(i=0;i<array.length;i++){
-                    fn(array[i])
+                    fn(array[i],i);
                 }
             }else{
                 throw new Error('请传入正确的参数');
@@ -257,7 +257,7 @@
             if(isArrayLike(array)){
                 var i;
                 for(i=0;i<array.length;i++){
-                    if(fn(array[i]))
+                    if(fn(array[i]),i)
                         return true;
                 }
                 return false;
@@ -276,7 +276,7 @@
             if(isArrayLike(array)){
                 var newAry = [];
                 for(var i =0;i<array.length;i++){
-                    newAry.push(fn(array[i]));
+                    newAry.push(fn(array[i],i));
                 }
                 return newAry;
             }else{
@@ -294,7 +294,7 @@
             if(isArrayLike(array)){
                 var newAry = [];
                 for(var i = 0;i<array.length;i++){
-                    if(fn(array[i]))
+                    if(fn(array[i],i))
                         newAry.push(array[i]);
                 }
                 return newAry;
@@ -360,7 +360,7 @@
             clone: clone,
             dateCompare: dateCompare,
             isMobile: isMobile,
-            forEach:forEach
+            forEach :forEach
         };
         toolBox.utils = utils;
 }(S3);

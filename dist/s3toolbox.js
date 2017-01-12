@@ -106,38 +106,36 @@ var S3 = (function ($) {
 
     /**
      * ajax方法，通用
-     * @param url
-     * @param paramStr
-     * @param callback
-     * @param async
-     * @param method
+     * @param {String} url
+     * @param {String} method
+     * @param {String} async
+     * @param {String} param
+     * @param {String} dataType
+     * @param {Function}callback
+     * @param {Function}onerror
      */
-    var ajax = function(url,paramStr,callback,async,method){
-        if(paramStr == null)
-            paramStr = "";
-        if(async == null)
-            async = true;      //异步优先
-        if(method == null)
-            method = "POST";  //安全优先
-        if(paramStr.indexOf('__port=') < 0){
-            paramStr += "&__port=" + location.port;
-        }
+    var ajax = function(url,method,async,param,dataType,callback,onerror){
+        param = param || "";
+        async = async || true;      //异步优先
+        method = method || "POST";  //安全优先
+        dataType = dataType || "json";
         try {
-            if(async){
-                $.ajax({
-                    type: method,
-                    url: url,
-                    async: async,
-                    contentType:"application/x-www-form-urlencoded; charset=UTF-8",
-                    data:paramStr,
-                    cache:false,
-                    dataType: "html",
-                    success: function(data){
-                        toolBox.utils.isFunction(callback) &&  callback(JSON.parse(data));
-                    },
-                    timeout:3000
-                });
-            }
+            $.ajax({
+                type: method,
+                url: url,
+                async: async,
+                contentType:"application/x-www-form-urlencoded; charset=UTF-8",
+                data:param,
+                cache:false,
+                dataType: dataType,
+                success: function(data){
+                    toolBox.utils.isFunction(callback) && callback(JSON.parse(data));
+                },
+                error: function(){
+                    toolBox.utils.isFunction(callback) && onerror();
+                },
+                timeout:3000
+            });
         }catch(e){
             throw new Error(e);
         }
@@ -147,15 +145,17 @@ var S3 = (function ($) {
     var dataSetIdList = "__ids";
     var dataSetParams = "__params";
     var dataSetAppId = "__appId";
-    var custId,rootPath;
 
     function testConfig(){
         if(!toolBox.utils.isUndefined(S3Config)){
-            custId = S3Config.getConfig("s3_custId");
-            rootPath = S3Config.getConfig("s3_root");
-            return true;
+            var custId = S3Config.getConfig("s3_custId");
+            var rootPath = S3Config.getConfig("s3_root");
+            return {
+                custId:custId,
+                rootPath:rootPath
+            };
         }else{
-            return false;
+            return null;
         }
     }
     /**
@@ -208,41 +208,42 @@ var S3 = (function ($) {
      */
     var execjava = function(id,param,appId,callback,onError,async,httpMethod,uri){
         //查询是否有S3的定义
-        if(!testConfig()){
+        var config = testConfig();
+        if(!config){
             throw new Error("No S3Config detected!! Please make sure S3Config.php is properly included.");
-            return;
+            return false;
         }
         //如果没有custId和rootPath 无法进行了
-        if(custId == null || rootPath == null)
-            return;
         //id必输
-        if(!id)
-            return;
+        if(config.custId == null || config.rootPath == null || !id)
+            return false;
         //如果是S3，那没问题
-        if(!appId)
-            appId = custId;
+        appId = appId || custId;
         //默认POST
-        if(!httpMethod)
-            httpMethod = 'POST';
+        httpMethod = httpMethod || 'POST';
         //默认异步调用
-        if(!async)
-            async = true;
+        async = async || true;
         //如果没有地址，默认是S3指定
         if(!uri)
-            uri = rootPath + '~main/ajax.php';
+            uri = config.rootPath + '~main/ajax.php';
         //如果没有指定系统错误处理函数,则使用默认函数
         if(!onError)
             onError = localOnError;
-        //处理参数
-        var paramObj =treatParams(param);
-        var paramStr = dataSetIdList + '=' + encodeURIComponent(id) + '&' + dataSetParams + '=' + encodeURIComponent(JSON.stringify(paramObj)) + '&'+dataSetAppId+'=' + encodeURIComponent(appId);
 
-        //o了，可以进行ajax调用了
+        //处理参数
+        var paramObj = treatParams(param);
+        var paramStr = dataSetIdList + '=' + encodeURIComponent(id) + '&' + dataSetParams + '=' + encodeURIComponent(JSON.stringify(paramObj)) + '&'+dataSetAppId+'=' + encodeURIComponent(appId);
+        if(paramStr.indexOf('__port=') < 0){
+            paramStr += "&__port=" + location.port;
+        }
+        var dataType = "html";
+        
         try{
-            ajax(uri, paramStr, callback, async, httpMethod);
+            ajax(uri, httpMethod, async, paramStr,dataType, callback,onError);
         }catch(e){
             onError(e);
         }
+
     };
     toolBox.ajax = ajax;
     toolBox.execjava = execjava;
@@ -1133,11 +1134,11 @@ var S3 = (function ($) {
         this.key = function(n){
             if(n<0 || n>=keys.length) return null;
             return keys[n];
-        }
+        };
 
         this.getItem = function(key){
             return cookie[key] || null;
-        }
+        };
 
         this.setItem = function(key,value){
             if(!(key in cookie)){
@@ -1150,7 +1151,23 @@ var S3 = (function ($) {
             var localstr = key + "=" + encodeURIComponent(value);
             //属性 暂不考虑
             document.cookie = localstr;
-        }
+        };
+        this.removeItem = function(key){
+            if(!(key in cookie)) return;
+
+            delete cookie[key]; //对object去掉属性
+
+            for(var i = 0;i < keys.length;i++){
+                if(keys[i] === key){
+                    keys.splice(i,1);
+                    break;
+                }
+            }
+
+            this.length--;    //cookie 个数--
+
+            document.cookie = key + "=; max-age=0";
+        };
     };
     var cookieStorage = new CookieStorage();
 
@@ -1166,6 +1183,12 @@ var S3 = (function ($) {
                 sessionStorage.setItem(key,value);
             else
                 cookieStorage.setItem(key,value);
+        },
+        remove:function(key,value){
+            if(sessionStorage)
+                sessionStorage.removeItem(key);
+            else
+                cookieStorage.removeItem(key,value);
         }
     };
 })(S3);
@@ -1619,47 +1642,58 @@ var S3 = (function ($) {
      * @constructor
      */
     var Table = function(parent,data,callback,options){
+        options = $.extend({},Table.default,options);
         return new Table.prototype.makeTable(parent,data,callback,options);
     };
 
+    Table.default = {
+        width:"100%",
+        oddRowClass:"s3-table-row-odd",
+        rowClass:"s3-table-row",
+        headClass:"s3-table-head",
+        scroll: false
+    };
+
+
     Table.prototype = {
         constructor:Table,
+
         makeTable:function(parent,data,callback,options){
 
             if(parent == null || data == null || data.data == undefined || !toolbox.utils.isArray(data.data))
-                return null;
+                return this;
 
-            //缓存数据
-            var headTemp;
+            var table,child=[];
 
-            //判断是否有表头
+            //有表头,生成表头Virtual DOM
             if(data.title && toolbox.utils.isArray(data.title)){
-                headTemp = data.title;
+                var thead = makeHead(data.title,options);
+                if(thead) {
+                    this.thead = thead;
+                    child.push(thead);
+                }
             }
+
+            //有表体，生成表体 Virtual DOM
+            if(data.data && toolbox.utils.isArray(data.title)){
+                var tbody = makeBody(data.data,options);
+                if(tbody)
+                    child.push(tbody);
+            }
+
+            //生成table
+            table = toolbox.element('table',{"width":options.width},child).render();
+
+
             //是否有回调函数
             if(callback && toolbox.utils.isFunction(callback)){
                 this.callback = callback;
-            }
-
-            //渲染DOM
-            var thead = makeHead(headTemp,options);
-            var tbody = makeBody(data.data,options);
-            var table,child=[];
-            if(thead) {
-                this.thead = thead;
-                child.push(thead);
-            }
-            if(tbody)
-                child.push(tbody);
-            table = toolbox.element('table',{},child).render();
-
-
-            if(this.callback)
                 bindCallBack(table,this.callback);
+            }
 
-            parent = typeof parent == 'string'?document.getElementById(parent):parent;
+
+            parent = typeof parent == 'string' ? document.getElementById(parent) : parent;
             parent.innerHTML = "";
-            table.style = "width:100%";
             parent.appendChild(table);
 
             this.options = options;
@@ -1668,8 +1702,11 @@ var S3 = (function ($) {
             //如果有排序功能，需要默认排序规则
             // this.sort = 'default';
             //this.sortType = '0';
+
             return this;
         },
+
+
         /**
          * 更新表体内容
          * @param data
@@ -1677,21 +1714,28 @@ var S3 = (function ($) {
          */
         setData:function(data){
             if(!data || !toolbox.utils.isArray(data)){
-                throw new TypeError('期望传入表格的内容数组，实际传入'+data+",请使用正确的参数!");
+                throw new TypeError('TypeError! Expect Array, got '+data);
                 return this;
             }
 
             //渲染DOM
             var table,child=[];
-            var options = this.options || null;
-            var tbody = makeBody(data,options);
+            var options = this.options;
+
+            //表头
             if(this.thead)
                 child.push(this.thead);
+
+            //表体
+            var tbody = makeBody(data,options);
             if(tbody)
                 child.push(tbody);
-            table = toolbox.element('table',{},child).render();
+
+            table = toolbox.element('table',{'width':options.width},child).render();
+
             if(this.callback)
                 bindCallBack(table,this.callback);
+
             this.parent.innerHTML = "";
             this.parent.appendChild(table);
             return this;
@@ -1701,7 +1745,7 @@ var S3 = (function ($) {
     //把makeTable的原型指向Table的原型
     //从而makeTable的构造器指向Table的构造器
     Table.prototype.makeTable.prototype = Table.prototype;
-
+    
     toolbox.table = Table;
 }(S3);
 /**
@@ -2476,7 +2520,7 @@ var S3 = (function ($) {
             if(isArrayLike(array)){
                 var i;
                 for(i=0;i<array.length;i++){
-                    fn(array[i])
+                    fn(array[i],i);
                 }
             }else{
                 throw new Error('请传入正确的参数');
@@ -2492,7 +2536,7 @@ var S3 = (function ($) {
             if(isArrayLike(array)){
                 var i;
                 for(i=0;i<array.length;i++){
-                    if(fn(array[i]))
+                    if(fn(array[i]),i)
                         return true;
                 }
                 return false;
@@ -2511,7 +2555,7 @@ var S3 = (function ($) {
             if(isArrayLike(array)){
                 var newAry = [];
                 for(var i =0;i<array.length;i++){
-                    newAry.push(fn(array[i]));
+                    newAry.push(fn(array[i],i));
                 }
                 return newAry;
             }else{
@@ -2529,7 +2573,7 @@ var S3 = (function ($) {
             if(isArrayLike(array)){
                 var newAry = [];
                 for(var i = 0;i<array.length;i++){
-                    if(fn(array[i]))
+                    if(fn(array[i],i))
                         newAry.push(array[i]);
                 }
                 return newAry;

@@ -224,6 +224,20 @@
             return value === undefined ? value : value.replace(/\,/g, '');
         };
 
+        //Number.prototype 扩展
+        Number.prototype.add = function(n){
+             return add(this,n);
+        };
+        Number.prototype.sub = function(n){
+             return sub(this,n);
+        };
+        Number.prototype.mul = function(n){
+            return multiply(this,n);
+        };
+        Number.prototype.div = function (n) {
+            return division(this,n);
+        };
+
     var calculator = {
             //四则运算
             add: add,

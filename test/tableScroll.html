@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Table Scroll</title>
+    <style>
+        table{
+            border-collapse:collapse;
+            border:solid 1px blue;
+        }
+        #scroll table tr{
+            border:solid 1px;
+            height:30px;
+        }
+        table tr td{
+            border-right:solid 1px;
+        }
+        .s3-table tr:hover{
+            background:red;
+        }
+        .s3-table-row{
+            background: silver;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="scroll" style = "width:500px;"></div>
+    <div><button id="newdata">设置新的数据</button></div>
+    <script src="../js/jquery.min.js"></script>
+    <script src="../dist/s3toolbox.js"></script>
+    <script src="../js/tableScroll.js"></script>
+    <script>
+        $(function(){
+            var data = {
+                title:['名称','语法','说明','例子'],
+                data:[]
+            };
+            for(var i=0;i<10;i++){
+                data.data.push({   name:'simple attribute selector',
+                    method: '[attr]',
+                    func:'选择具有此属性的元素',
+                    mea:'blockquidtesdsdf'
+                });
+            }
+            var options = {
+                width:"700px",
+                height:"200px",
+                colWidth:["170px","170px","170px","170px"]
+            };
+
+            var table = TableScroll('scroll',data,options);
+
+            $("#newdata").on("click",function(){
+                var data1 = data.data;
+                for(var j=0;j<10;j++){
+                    data.data.unshift({   name:'新的数据',
+                        method: '[attr]',
+                        func:'选择具有此属性的元素',
+                        mea:'blockquidtesdsdf'
+                    });
+                }
+                table.setBody(data1,options);
+            });
+        });
+    </script>
+</body>
+</html>

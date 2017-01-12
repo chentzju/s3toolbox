@@ -18,12 +18,14 @@
 <div id = 'table1'></div>
 <script>
     $(function(){
+
         //数据，在实际项目中来自后台，但需要经过处理
         var data1 = {
             title: ["content1","content2",{tagName:'select',props:{},children:[
                 {tagName:'option',props:{},children:['haha']},
                 {tagName:'option',props:{},children:['heihei']}
             ]},'title4'],
+
             data:[
                 {
                     name: {tagName:'a',props:{href:'#'},children:['链接']},
@@ -42,11 +44,14 @@
                 }
             ]
         };
+
+
         var data2 = [
             {name:'张三',money:'25',count:'审核'},
             {name:'张三',money:'35',count:'审核'},
             {name:'张三',money:'15',count:'审核'}
         ];
+
         var opt = {
             start:[
                 {

@@ -3,99 +3,90 @@
  */
 +function(toolbox){
 
+
+    function getChildren(obj){
+        var children = [];
+        obj.forEach(function(item){
+            if(item.tagName){
+                item.props = item.props || {};
+                item.children = utils.isArray(item.children) ? item.children : [];
+                children.push(el.make(item));
+            }
+        });
+        return children;
+    }
     /**
      *  生成表头的虚拟DOM对象
-     * @param headdata
+     * @param data
      * @param options
      * @returns {Element}
      */
-    function makeHead(headdata,options){
+    function makeHead(data,options){
         var utils = toolbox.utils;
-        if(headdata == undefined || !utils.isArray(headdata))
-            return null;
-
         var el = toolbox.element;
-        var rowchild = [];
+
+        if(data == null || !utils.isArray(data))
+            return el("tbody",{},[]);
 
         //处理start  end不处理
-        var startCol,startChild = [];
-        if(options && options.start && utils.isArray(options.start)){
+        var rowchild = [];
+        if(options.start && utils.isArray(options.start)){
             var start = options.start;
-            start.forEach(function(item){
-                startChild.push(el.make(item));
-            });
+            var startChild = getChildren(start);
+            rowchild.push(el('th',null,startChild));
         }
-        startCol = el('th',null,startChild);
 
         //行的子元素
-        rowchild.push(startCol);
-        headdata.forEach(function(item){
-            if(utils.isPlainObject(item)){
+        data.forEach(function(item){
+            if(utils.isPlainObject(item) && item.tagName){
+                item.props = item.props || {};
+                item.children = utils.isArray(item.children) ? item.children : [];
                 item = el.make(item);
             }
             rowchild.push(el('th',null,[item]));
         });
 
         //生成行的虚拟DOM
-        var obj = options.th ? {"class":options.th}:null;
-        var tr = el('tr',obj,rowchild);
-
-        //生成表头的虚拟DOM
-        var thead = el('thead',{},[tr]);
-
-        //返回虚拟DOM
-        return thead;
+        var tr = el('tr',{},rowchild);
+        return  el('tbody',{},[tr]);
     }
 
     /**
      * 生成标题的虚拟DOM对象
-     * @param bodydata
+     * @param data
      * @param options
      * @returns {Element}
      */
-    function makeBody(bodydata,options){
+    function makeBody(data,options){
         var utils = toolbox.utils;
-        if(bodydata == undefined || !utils.isArray(bodydata))
-            return null;
-
         var el = toolbox.element;
+
+        if(data == undefined || !utils.isArray(data))
+            return el('tbody',null,[]);
 
         //表体的子元素
         var bodychild=[];
 
-        //处理start
-        var startCol,startChild = [];
-        if(options && options.start && utils.isArray(options.start)){
-            var start = options.start;
-            start.forEach(function(item){
-                startChild.push(el.make(item));
-            });
-        }
-        startCol = el('th',null,startChild);
-
-
-        //处理end
-        var endCol,endChild = [];
-        if(options && options.end && utils.isArray(options.end)){
-            var end = options.end;
-            end.forEach(function(item){
-                endChild.push(el.make(item));
-            });
-        }
-        endCol = el('td',null,endChild);
-
         //对每一行
-        for(var i =0;i<bodydata.length;i++){
-            var rowdata = bodydata[i],rowchild=[];
+        for(var i =0;i<data.length;i++){
+            var rowdata = data[i],rowchild=[];
 
-            if(startCol){
-                rowchild.push(startCol);
-            }
             for(var key in rowdata) rowchild.push(el.make(
                 {tagName:'td', props:{name: key}, children:[rowdata[key]]
                 }));
-            if(endCol) {
-                rowchild.push(endCol);
+
+
+            //处理start
+            if(options.start && utils.isArray(options.start)){
+                var start = options.start;
+                var startChild = getChildren(start);
+                rowchild.push(el('td',null,startChild))
+            }
+
+            //处理end
+            if(options.end && utils.isArray(options.end)){
+                var endChild = getChildren(options.end);
+                rowchild.push(el('td',null,endChild));
             }
 
             //生成每一行的虚拟DOM 并作为表体的子元素
@@ -104,9 +95,7 @@
         }
 
         //生成标题的虚拟DOM
-        var tbody = el('tbody',null,bodychild);
-
-        return tbody;
+        return el('tbody',null,bodychild);
     }
 
     /**
@@ -162,57 +151,62 @@
      * @constructor
      */
     var Table = function(parent,data,callback,options){
+        options = $.extend({},Table.default,options);
         return new Table.prototype.makeTable(parent,data,callback,options);
     };
 
+    Table.default = {
+        width:"100%",   //表宽
+        height:"100%",   //表体的高度 不含表头 只在需要滚动的时候才有效
+        colWidth:[],     //列宽  默认均分
+        tableClass:"s3-table",   //表类
+        rowClass:"s3-table-row",          //行样式类  仅在偶数行存在
+        scroll: false
+    };
+
+
     Table.prototype = {
         constructor:Table,
-        makeTable:function(parent,data,callback,options){
 
-            if(parent == null || data == null || data.data == undefined || !toolbox.utils.isArray(data.data))
-                return null;
-
-            //缓存数据
-            var headTemp;
-
-            //判断是否有表头
-            if(data.title && toolbox.utils.isArray(data.title)){
-                headTemp = data.title;
+        makeTable:function(container,data,callback,options){
+            if(container == null){
+                throw("Element Not Found Error! makeTable(container...)  请选择正确的元素对象！");
+                return this;
             }
+            if(data == null || data.data == undefined || !S3.utils.isArray(data.data)){
+                throw("Type Error! Expect Array! makeTable(container,data...) 请使用正确的数据格式！");
+                return this;
+            }
+
+            //表头Virtual DOM
+            var thead = makeHead(data.title,options);
+            this.thead = thead;
+            //表体Virtual DOM
+            var tbody = makeBody(data.data,options);
+
+            //生成table
+            var table = toolbox.element('table',{"width":options.width},[thead,tbody]).render();
+
             //是否有回调函数
             if(callback && toolbox.utils.isFunction(callback)){
                 this.callback = callback;
-            }
-
-            //渲染DOM
-            var thead = makeHead(headTemp,options);
-            var tbody = makeBody(data.data,options);
-            var table,child=[];
-            if(thead) {
-                this.thead = thead;
-                child.push(thead);
-            }
-            if(tbody)
-                child.push(tbody);
-            table = toolbox.element('table',{},child).render();
-
-
-            if(this.callback)
                 bindCallBack(table,this.callback);
+            }
 
-            parent = typeof parent == 'string'?document.getElementById(parent):parent;
-            parent.innerHTML = "";
-            table.style = "width:100%";
-            parent.appendChild(table);
+            container = typeof container == 'string' ? document.getElementById(container) : container;
+            container.innerHTML = "";
+            container.appendChild(table);
 
             this.options = options;
-            this.parent = parent;
+            this.container = container;
 
             //如果有排序功能，需要默认排序规则
             // this.sort = 'default';
             //this.sortType = '0';
             return this;
         },
+
+
         /**
          * 更新表体内容
          * @param data
@@ -220,23 +214,30 @@
          */
         setData:function(data){
             if(!data || !toolbox.utils.isArray(data)){
-                throw new TypeError('期望传入表格的内容数组，实际传入'+data+",请使用正确的参数!");
+                throw new TypeError('TypeError! Expect Array, got '+data);
                 return this;
             }
 
             //渲染DOM
             var table,child=[];
-            var options = this.options || null;
-            var tbody = makeBody(data,options);
+            var options = this.options;
+
+            //表头
             if(this.thead)
                 child.push(this.thead);
+
+            //表体
+            var tbody = makeBody(data,options);
             if(tbody)
                 child.push(tbody);
-            table = toolbox.element('table',{},child).render();
+
+            table = toolbox.element('table',{'width':options.width},child).render();
+
             if(this.callback)
                 bindCallBack(table,this.callback);
-            this.parent.innerHTML = "";
-            this.parent.appendChild(table);
+
+            this.container.innerHTML = "";
+            this.container.appendChild(table);
             return this;
         }
     };
@@ -244,6 +245,6 @@
     //把makeTable的原型指向Table的原型
     //从而makeTable的构造器指向Table的构造器
     Table.prototype.makeTable.prototype = Table.prototype;
-
+    
     toolbox.table = Table;
 }(S3);
